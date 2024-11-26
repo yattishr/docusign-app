@@ -1,5 +1,12 @@
-to start Prisma studio: prisma studio
+to start Prisma studio: npx prisma studio
 
 Webhook URL: https://mhz-promotion-relatively-winter.trycloudflare.com 
 
 Clerk Dashboard: https://dashboard.clerk.com/
+
+neon.tech:
+https://console.neon.tech/app/projects/lucky-morning-98964127?branchId=br-noisy-lab-a50rjm4r&database=signify-ai
+
+
+T3:
+https://create.t3.gg/

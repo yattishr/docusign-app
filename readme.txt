@@ -10,3 +10,6 @@ https://console.neon.tech/app/projects/lucky-morning-98964127?branchId=br-noisy-
 
 T3:
 https://create.t3.gg/
+
+Adding Aurinko to Google Workspace allowlist:
+https://docs.aurinko.io/getting-started/adding-aurinko-to-google-workspace-allowlist

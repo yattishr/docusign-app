@@ -13,3 +13,7 @@ https://create.t3.gg/
 
 Adding Aurinko to Google Workspace allowlist:
 https://docs.aurinko.io/getting-started/adding-aurinko-to-google-workspace-allowlist
+
+Aurinko Docs: 
+https://apirefs.aurinko.io/#tag/Auth
+https://apirefs.aurinko.io/#tag/Auth/operation/authCodeExchange

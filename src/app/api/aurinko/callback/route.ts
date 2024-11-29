@@ -2,6 +2,8 @@ import { exchangeCodeForAccessToken, getAccountDetails } from "@/lib/aurinko";
 import { db } from "@/server/db";
 import { auth, EmailAddress } from "@clerk/nextjs/server";
 import { NextRequest, NextResponse } from "next/server";
+import {waitUntil} from '@vercel/functions';
+import axios from "axios";
 
 export const GET = async (req: NextRequest) => {
   const { userId } = await auth();
@@ -42,5 +44,20 @@ export const GET = async (req: NextRequest) => {
     }
   })
 
-  return NextResponse.json({ Status: "Ok" }, { status: 200 });
+  // return NextResponse.json({ Status: "Ok" }, { status: 200 });
+
+
+  // Trigger initial email sync
+  waitUntil(
+    axios.post(`${process.env.NEXT_PUBLIC_URL}/api/initial-sync`, {
+      accountId: token.accountId.toString(),
+      userId
+    }).then(response => {
+      console.log(`Initial email sync triggered with data: ${JSON.stringify(response.data)}`)
+    }).catch(error => {
+      console.error("Failed to trigger initial sync:", error)
+    })
+  )
+
+  return NextResponse.redirect(new URL('/mail', req.url))
 };

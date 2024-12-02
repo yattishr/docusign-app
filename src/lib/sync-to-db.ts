@@ -78,7 +78,7 @@ async function upsertEmail(email: EmailMessage, accountId: string, index: number
                 subject: email.subject,
                 done: false,
                 draftStatus: emailLabelType === 'draft',
-                inboxStatus: emailLabelType === 'inbox',
+                inBoxStatus: emailLabelType === 'inbox',
                 sentStatus: emailLabelType === 'sent',
                 lastMessageDate: new Date(email.sentAt),
                 participantIds: [...new Set ([
@@ -175,7 +175,7 @@ async function upsertEmail(email: EmailMessage, accountId: string, index: number
             where: { id: thread.id },
             data: {
                 draftStatus: threadFolderType === 'draft',
-                inboxStatus: threadFolderType === 'inbox',
+                inBoxStatus: threadFolderType === 'inbox',
                 sentStatus: threadFolderType === 'sent',
             }
         });

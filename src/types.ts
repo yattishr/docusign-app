@@ -53,7 +53,7 @@ export interface EmailMessage {
     sysClassifications: Array<"personal" | "social" | "promotions" | "updates" | "forums">;
     sensitivity: "normal" | "private" | "confidential";
     meetingMessageMethod?: "request" | "reply" | "cancel" | "counter" | "other";
-    from: EmailAddress[];
+    from: EmailAddress;
     to: EmailAddress[];
     cc: EmailAddress[];
     bcc: EmailAddress[];

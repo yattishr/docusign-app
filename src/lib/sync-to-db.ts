@@ -4,16 +4,15 @@ import pLimit from "p-limit"
 import { threadId } from "worker_threads";
 
 export async function syncEmailsToDatabase(emails: EmailMessage[], accountId: string) {
-    console.log('Attempting to sync emails to database', emails.length)
+    console.log(`Email sync from syncEmailsToDatabase initiated. Syncing ${emails.length} emails to database.`)
     const limit = pLimit(1)
 
     try {
-        // await Promise.all(emails.map((email, index) => upsertEmail(email, accountId, index)))
         for (const email of emails) {
             await upsertEmail(email, accountId, 0)
         }
     } catch (error) {
-        console.error("Oooopsss. Error occured while saving Emails.", error)
+        console.error("Oooopsss. Error occured in syncEmailsToDatabase while sync-ing Emails.", error)
     }
 }
 
@@ -48,7 +47,7 @@ async function upsertEmail(email: EmailMessage, accountId: string, index: number
 
         const fromAddress = addressMap.get(email.from.address);
         if (!fromAddress) {
-            console.log(`Failed to upsert from address for email ${email.bodySnippet}`)
+            console.log(`Failed to upsert from address.`)
             return;
         }
 
@@ -99,7 +98,7 @@ async function upsertEmail(email: EmailMessage, accountId: string, index: number
                 lastModifiedTime: new Date(),
                 sentAt: new Date(email.sentAt),
                 receivedAt: new Date(email.receivedAt),
-                internetMessageId: email.internetMessage,
+                internetMessageId: email.internetMessageId,
                 subject: email.subject,
                 sysLabels: email.sysLabels,
                 keywords: email.keywords  as any,
@@ -110,7 +109,7 @@ async function upsertEmail(email: EmailMessage, accountId: string, index: number
                 to: {set: toAddresses.map(a => ({id: a!.id}))},
                 cc: {set: ccAddresses.map(a => ({id: a!.id}))},
                 bcc: {set: bccAddresses.map(a => ({id: a!.id}))},
-                replyTo: email.replyTo  as any,
+                replyTo: {set: replyToAddresses.map(a => ({ id: a!.id}))},
                 hasAttachments: email.hasAttachments,
                 body: email.body,
                 bodySnippet: email.bodySnippet,                
@@ -131,7 +130,7 @@ async function upsertEmail(email: EmailMessage, accountId: string, index: number
                 lastModifiedTime: new Date(),
                 sentAt: new Date(email.sentAt),
                 receivedAt: new Date(email.receivedAt),
-                internetMessageId: email.internetMessage,
+                internetMessageId: email.internetMessageId,
                 subject: email.subject,
                 sysLabels: email.sysLabels,
                 internetHeaders: email.internetHeaders as any,
@@ -185,7 +184,7 @@ async function upsertEmail(email: EmailMessage, accountId: string, index: number
         }
 
     } catch (error) {
-        console.log("Failed to insert email address", error)
+        console.error("Failed to insert email address", error)
         return null
     }
 }

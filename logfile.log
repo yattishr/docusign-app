@@ -1,0 +1,33 @@
+
+> docusign-app@0.1.0 dev
+> next dev --turbo
+
+   Γû▓ Next.js 15.0.3 (Turbopack)
+   - Local:        http://localhost:3000
+   - Environments: .env
+
+ Γ£ô Starting...
+ Γ£ô Compiled in 352ms
+ Γ£ô Ready in 1690ms
+ Γùï Compiling / ...
+ Γ£ô Compiled / in 3.1s
+ GET / 200 in 3635ms
+ POST / 200 in 121ms
+ Γùï Compiling /api/aurinko/callback ...
+ Γ£ô Compiled /api/aurinko/callback in 503ms
+Logging userId: user_2pO930LwlGozXUPxMYgZXnkEQEJ
+Logging status: success
+--- Logging code: eyJhbGciOiJIUzI1NiJ9.eyJzZXJ2aWNlVHlwZSI6Ikdvb2dsZSIsInJlc3BvbnNlVHlwZSI6ImNvZGUiLCJjb2RlIjoiYXV0aDpjMDAwNmIwOS1hYTZhLTQ2ZGEtYWVmYS0yMjk1MzkwODEyNzgiLCJhcHBJZCI6MTI1Miwic2NvcGVzIjoiTWFpbC5SZWFkIE1haWwuUmVhZFdyaXRlIE1haWwuU2VuZCBNYWlsLkRyYWZ0cyBNYWlsLkFsbCIsInJldHVyblVybCI6Imh0dHA6Ly9sb2NhbGhvc3Q6MzAwMC9hcGkvYXVyaW5rby9jYWxsYmFjayIsImlhdCI6MTczMzE0NzYxNSwiZXhwIjoxNzMzMTQ5NDE1fQ.osp7e7PZVaESCzCVBN4MlXx8C_7dPLZaviFwMO_YvEs ---
+--- Logging token: [object Object] ---
+--- Successfully retrieved accountDetails ---
+ GET /api/aurinko/callback?code=eyJhbGciOiJIUzI1NiJ9.eyJzZXJ2aWNlVHlwZSI6Ikdvb2dsZSIsInJlc3BvbnNlVHlwZSI6ImNvZGUiLCJjb2RlIjoiYXV0aDpjMDAwNmIwOS1hYTZhLTQ2ZGEtYWVmYS0yMjk1MzkwODEyNzgiLCJhcHBJZCI6MTI1Miwic2NvcGVzIjoiTWFpbC5SZWFkIE1haWwuUmVhZFdyaXRlIE1haWwuU2VuZCBNYWlsLkRyYWZ0cyBNYWlsLkFsbCIsInJldHVyblVybCI6Imh0dHA6Ly9sb2NhbGhvc3Q6MzAwMC9hcGkvYXVyaW5rby9jYWxsYmFjayIsImlhdCI6MTczMzE0NzYxNSwiZXhwIjoxNzMzMTQ5NDE1fQ.osp7e7PZVaESCzCVBN4MlXx8C_7dPLZaviFwMO_YvEs&requestId=6235809b-c16d-47b9-97cb-3b951fb0166a&status=success&type=accountAuthResult 307 in 5202ms
+ Γ£ô Compiled /api/initial-sync in 234ms
+ GET /mail 200 in 359ms
+Initial sync successful. We have synced:  3  emails.
+Email sync from syncEmailsToDatabase initiated. Syncing 3 emails to database.
+Upserting email:  0
+Upserting email:  0
+Upserting email:  0
+Email sync completed successfully. H4sIAAAAAAAA_2NgZmBkAANGx3aGFjCLXU6LgSWjJDcHAA-pb5gdAAAA
+ POST /api/initial-sync 200 in 19500ms
+Initial email sync triggered.

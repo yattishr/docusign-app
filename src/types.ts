@@ -46,7 +46,7 @@ export interface EmailMessage {
     lastModifiedTime: string;
     sentAt: string;
     receivedAt: string;
-    internetMessage: string;
+    internetMessageId: string;
     subject: string;
     sysLabels: Array<"junk" | "trash" | "sent" | "inbox" | "unread" | "flagged" | "important" | "draft">;
     keywords: string;

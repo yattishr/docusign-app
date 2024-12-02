@@ -26,7 +26,6 @@ export const POST = async (req: NextRequest) => {
     }
 
     const { emails, deltaToken } = response
-    // console.log(`Logging initial email download: ${emails}`);
 
     await db.account.update({
         where: {

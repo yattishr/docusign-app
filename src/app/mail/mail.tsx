@@ -22,6 +22,7 @@ import { cn } from "@/lib/utils";
 import { useState } from "react";
 import AccountSwitcher from "./account-switcher";
 import SideBar from "./sidebar";
+import ThreadList from "./thread-list";
 
 type Props = {
   defaultLayout: number[] | undefined;
@@ -88,11 +89,11 @@ const Mail = ({ defaultLayout = [20, 32, 48], navCollapsedSize, defaultCollapsed
             Search Bar
 
             <TabsContent value="inbox">
-                Inbox
+                <ThreadList />
             </TabsContent>
 
             <TabsContent value="done">
-                Done
+            <ThreadList />
             </TabsContent>
 
           </Tabs>

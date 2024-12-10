@@ -21,12 +21,12 @@ export const GET = async (req: NextRequest) => {
   if (!code) return NextResponse.json({message: 'No code provided'}, {status: 400})
   
   const token = await exchangeCodeForAccessToken(code)
-  console.log(`--- Logging token: ${token} ---`);
+  console.log(`--- Logging token: ${JSON.stringify(token)} ---`);
   if (!token) return NextResponse.json({message: 'Failed to exchange code for access token'}, {status: 400})
 
   const accountDetails = await getAccountDetails(token.accessToken)
-  // console.log(`Logging account details: ${JSON.stringify(accountDetails)}`)
-  console.log(`--- Successfully retrieved accountDetails ---`)
+  console.log(`--- Successfully retrieved accountDetails: ${JSON.stringify(accountDetails)} ---`)
+  // console.log(`--- Successfully retrieved accountDetails ---`)
 
   // write accountDetails into Prisma Db
   await db.account.upsert({

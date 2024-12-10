@@ -1,4 +1,5 @@
 to start Prisma studio: npx prisma studio
+to push updates to Prisma Db: npx prisma db push
 
 Webhook URL: https://mhz-promotion-relatively-winter.trycloudflare.com 
 

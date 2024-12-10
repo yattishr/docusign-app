@@ -1,16 +1,17 @@
 "use client"
 
-import React from 'react'
+import React, { ComponentProps } from 'react'
 import useThreads from '../hooks/use-threads'
 import { format, formatDate, formatDistanceToNow } from "date-fns"
 import { Thread } from '@prisma/client'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 import DOMPurify from 'dompurify'
-import { Badge } from 'lucide-react'
+import { Badge } from "@/components/ui/badge"
+import { threadId } from 'worker_threads'
 
 const ThreadList = () => {
-  const { threads } = useThreads()
+  const { threads, threadId, setThreadId } = useThreads()
   const groupedThreads = threads?.reduce((acc, thread) => {
     const date = format(thread.emails[0]?.sentAt ?? new Date(), "yyyy-MM-dd")
     if (!acc[date]) {
@@ -29,8 +30,10 @@ const ThreadList = () => {
                         {date}
                     </div>
                     {threads.map(thread => {
-                        return <button key={thread.id} className={
-                            cn("flex flex-col items-start gap-2 rounded-lg border p-3 text-left text-sm transition-all relative")
+                        return <button onClick={() => setThreadId(thread.id)} key={thread.id} className={
+                            cn("flex flex-col items-start gap-2 rounded-lg border p-3 text-left text-sm transition-all relative", {
+                                'bg-accent': thread.id === threadId
+                            })
                         }>
                             <div className='flex flex-col w-full gap-2'>
                                 <div className='flex items-center'>
@@ -65,7 +68,7 @@ const ThreadList = () => {
                             {thread.emails[0]?.sysLabels.length && (
                                 <div className='flex items-center gap-2'>
                                     {thread.emails[0]?.sysLabels.map(label => {
-                                        return <Badge key={label} className='text-xs font-medium'>
+                                        return <Badge key={label} className='text-xs font-medium' variant={getBadgeVariantFromLabel(label)}>
                                             {label}
                                         </Badge>
                                     })}
@@ -80,6 +83,14 @@ const ThreadList = () => {
 
     </div>
   )
+}
+
+
+function getBadgeVariantFromLabel(label: string): ComponentProps<typeof Badge>['variant']  {
+    if (['work'].includes(label.toLowerCase())) {
+        return 'default'
+    }
+    return 'secondary'
 }
 
 export default ThreadList

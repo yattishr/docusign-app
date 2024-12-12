@@ -4,7 +4,9 @@ import { db } from "@/server/db";
 export const POST = async (req: Request) => {
   try {
     console.log("---- Inside Clerk webhook ---")
+    
     const { data } = await req.json();
+
     console.log("--- Clerk webhook initiated...---", data);
 
     const emailAddress = data.email_addresses[0].email_address;
@@ -25,8 +27,6 @@ export const POST = async (req: Request) => {
         imageUrl,
       },
     });
-    
-    // debugger; // halt code execution for testing user creation.
 
     return new Response("Webhook received", { status: 200 });
   } catch (error) {

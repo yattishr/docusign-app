@@ -25,18 +25,10 @@ export const GET = async (req: NextRequest) => {
   if (!token) return NextResponse.json({message: 'Failed to exchange code for access token'}, {status: 400})
 
   const accountDetails = await getAccountDetails(token.accessToken)
-  console.log(`--- Successfully retrieved accountDetails: ${JSON.stringify(accountDetails)} ---`)
-  // console.log(`--- Successfully retrieved accountDetails ---`)
+  // console.log(`--- Successfully retrieved accountDetails: ${JSON.stringify(accountDetails)} ---`)
+  console.log(`--- Successfully retrieved accountDetails ---`)
 
   console.log(`--- Logging: ${token.accountId.toString()} from aurinko\callback\route.ts ---`)
-
-  // const userExists = await db.user.findUnique({
-  //   where: { id: userId },
-  // });
-  
-  // if (!userExists) {
-  //   throw new Error(`User with id ${userId} does not exist`);
-  // }  
 
   // write accountDetails into Prisma Db
   await db.account.upsert({

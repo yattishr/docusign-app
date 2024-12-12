@@ -20,3 +20,7 @@ https://apirefs.aurinko.io/#tag/Auth
 https://apirefs.aurinko.io/#tag/Auth/operation/authCodeExchange
 
 Elliot Chong Github: https://github.com/Elliott-Chong/normalhuman/tree/main
+
+NGROK:
+to install: npm install ngrok
+ngrok config add-authtoken 2q4k1mUZ6SRxYLbw14vKZVswRQW_TQhSZftJLCYFvB8LKmEg

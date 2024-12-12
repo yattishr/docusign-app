@@ -18,7 +18,7 @@ const useThreads = () => {
     done
  }, {
     enabled: !!accountId && !!tab, 
-    placeholderData: e => e, refetchInterval: 10000,
+    placeholderData: e => e, refetchInterval: 5000,
  })
  
  return {
@@ -30,9 +30,6 @@ const useThreads = () => {
     setThreadId,
     account: accounts?.find(e => e.id === accountId)
  }
-
-
-
 }
 
 export default useThreads

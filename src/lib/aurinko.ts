@@ -3,10 +3,9 @@
 import { auth } from "@clerk/nextjs/server";
 import axios from "axios"
 
-export const getAurinkoAuthUrl = async (
-  serviceType: "Google" | "Office365",
-) => {
+export const getAurinkoAuthUrl = async (serviceType: "Google" | "Office365",) => {
   const { userId } = await auth();
+  console.log(`--- Logging ${userId} from aurinko.ts ---`)
   if (!userId) throw new Error("Unauthorised access");
 
   const params = new URLSearchParams({
@@ -16,6 +15,7 @@ export const getAurinkoAuthUrl = async (
     responseType: "code",
     returnUrl: `${process.env.NEXT_PUBLIC_URL}/api/aurinko/callback`,
   });
+  console.log(`--- Logging aurinko callback string: https://api.aurinko.io/v1/auth/authorize?${params.toString()} ---`)
 
   return `https://api.aurinko.io/v1/auth/authorize?${params.toString()}`;
 };

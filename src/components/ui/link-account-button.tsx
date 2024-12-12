@@ -8,7 +8,7 @@ export const LinkAccountButton = () => {
     <Button
       onClick={async () => {
         const authUrl = await getAurinkoAuthUrl("Google");
-        console.log(authUrl)
+        console.log(`Logging authUrl from link-account-button: ${authUrl}`)
         window.location.href = authUrl
       }}
     >

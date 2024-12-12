@@ -17,7 +17,7 @@ export const authorizeAccountAccess = async(accountId: string, userId: string) =
         }
     })
     if (!account) throw new Error("Unauthorised access. Account not found.")
-        return account
+    return account
 }
 
 export const accountRouter = createTRPCRouter({

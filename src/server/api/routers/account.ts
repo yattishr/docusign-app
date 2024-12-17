@@ -4,7 +4,7 @@ import { string, z } from "zod"
 import { Prisma } from "@prisma/client";
 
 export const authorizeAccountAccess = async(accountId: string, userId: string) => {
-    console.log(`Logging accountId: ${accountId} and userId: ${userId} from account.ts`)
+    // console.log(`Logging accountId: ${accountId} and userId: ${userId} from account.ts`)
 
     const account = await db.account.findFirst({
         where: {

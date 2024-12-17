@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from "@/components/ui/input"
 
 import TagInput from './tag-input'
+import AIComposeButton from './ai-compose-button'
 
 type Props = {
     subject: string
@@ -31,6 +32,8 @@ const EmailEditor = ({subject, setSubject, toValues, setToValues, ccValues, setC
   const [value, setValue] = useState<string>('')
   const [expanded, setExpanded] = useState<boolean>(defaultToolbarExpanded)
 
+  const [generation, setGeneration] = useState('')
+
   const CustomText = Text.extend({
     addKeyboardShortcuts() {
         return {
@@ -49,6 +52,10 @@ const EmailEditor = ({subject, setSubject, toValues, setToValues, ccValues, setC
         setValue(editor.getHTML())
     }
   })   
+
+  const onGenerate = (token: string) => {    
+    editor?.commands?.insertContent(token)
+  }
 
   if (!editor) return null
 
@@ -86,6 +93,9 @@ const EmailEditor = ({subject, setSubject, toValues, setToValues, ccValues, setC
             <span className="font-medium text-green-600">Draft {" "} </span>
             <span>to {to.join(', ')}</span>
           </div>
+
+          {/* Compose with AI button */}
+          <AIComposeButton isComposing={defaultToolbarExpanded} onGenerate={onGenerate} />
         </div>
       </div>
 

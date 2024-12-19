@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { EditorContent, useEditor } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
 import { Text } from '@tiptap/extension-text'
@@ -9,6 +9,8 @@ import { Input } from "@/components/ui/input"
 
 import TagInput from './tag-input'
 import AIComposeButton from './ai-compose-button'
+import { generate } from './action'
+import { readStreamableValue } from 'ai/rsc'
 
 type Props = {
     subject: string
@@ -31,14 +33,25 @@ type Props = {
 const EmailEditor = ({subject, setSubject, toValues, setToValues, ccValues, setCCValues, to, handleSend, isSending, defaultToolbarExpanded = false}: Props) => {
   const [value, setValue] = useState<string>('')
   const [expanded, setExpanded] = useState<boolean>(defaultToolbarExpanded)
+  const [ token, setToken ] = useState<string>('')
 
   const [generation, setGeneration] = useState('')
+
+  const aiGenerate = async (prompt: string) => {
+    const { output } = await generate(prompt)
+    for await (const token of readStreamableValue(output)) {
+      if (token) {
+        setToken(token)        
+      }
+    }
+  }
 
   const CustomText = Text.extend({
     addKeyboardShortcuts() {
         return {
-            'Meta-j': () => {
+            'Meta-m': () => {
                 console.log('Meta-j')
+                aiGenerate(this.editor.getText())
                 return true
             }
         }
@@ -52,6 +65,10 @@ const EmailEditor = ({subject, setSubject, toValues, setToValues, ccValues, setC
         setValue(editor.getHTML())
     }
   })   
+
+  useEffect(() => {
+    editor?.commands.insertContent(token)
+  }, [editor, token])
 
   const onGenerate = (token: string) => {    
     editor?.commands?.insertContent(token)
@@ -109,7 +126,7 @@ const EmailEditor = ({subject, setSubject, toValues, setToValues, ccValues, setC
         <span className="text-sm">
           Tip: Press{" "}
           <kbd className="rounded-lg border border-gray-200 bg-gray-100 px-2 py-1.5 text-xs font-semibold text-gray-800">
-            Cmd + J
+            Cmd + M
           </kbd>{" "}
           for AI autocomplete
         </span>

@@ -45,3 +45,46 @@ export async function generateEmail(context: string, prompt: string) {
     return { output: stream.value};
 
 }
+
+export async function generate(input: string) {
+    const stream = createStreamableValue('');
+
+    console.log("input", input);
+   
+    (
+       async () => {
+           const {textStream} = await streamText({
+               model: openai('gpt-3.5-turbo'),
+               prompt: `
+               ALWAYS RESPOND IN PLAIN TEXT, no html or markdown.
+               You are a helpful AI embedded in an email client app that is used to autocomplete sentences, similar to google gmail
+                The traits of AI include expert knowledge, helpfulness, cleverness, and articulateness.
+                AI is a well-behaved and well mannered individual.
+                AL is always friendly, kind, and inspiring, and he is eager to provide vivid and thoughtful responses to the user.
+                I am writing a piece of text in a notion text editor app.
+                Help me complete my train of thought here: <input>${input}</input>
+
+                When responding, please keep in mind:
+                - Keep the tone of the text consistent with the rest of the text.
+                - Keep the response short and sweet. Act like a copilot, finish my sentence if need be.
+                - Do not add fluff like 'I'm here to help you' or 'I'm a helpful AI' or any such thing.
+
+                Example:
+                Dear Alice, I'm sorry to hear that you are feeling down.
+
+                Output: Unfortunately, I can't help you with that.
+
+                Your output is directly concatenated to the input, so do not add any new lines or fomatting.                         
+               `
+           });
+   
+           for await (const token of textStream) {
+               stream.update(token)
+           }
+   
+           stream.done();
+       })();
+   
+       return { output: stream.value};
+   
+   }

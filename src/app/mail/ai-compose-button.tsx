@@ -30,8 +30,6 @@ const AIComposeButton = (props: Props) => {
 
   const aiGenerate = async (prompt: string) => {
     let context = ''
-
-    console.log(`Logging incoming prompt: ${prompt} from ai-compose button...`)
     
     if (!props.isComposing) {
       for (const email of thread?.emails ?? []) {
@@ -50,13 +48,11 @@ const AIComposeButton = (props: Props) => {
     }
 
     context += `My name is ${account?.name} and my email is ${account?.emailAddress}`
-    console.log(`Logging out the context: ${context}`)
-
+    
     const { output } = await generateEmail(context, prompt)
 
     for await (const token of readStreamableValue(output)) {      
-      if (token) {        
-        console.log(`${token}`)
+      if (token) {
         props.onGenerate(token)
       }
     }

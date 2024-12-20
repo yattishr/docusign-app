@@ -4,6 +4,8 @@ import EmailEditor from './email-editor'
 import { Separator } from '@/components/ui/separator'
 import { api, RouterOutputs } from '@/trpc/react'
 import useThreads from '../hooks/use-threads'
+import { toast, useToast } from "@/hooks/use-toast"
+
 
 const ReplyBox = () => {
   const { threadId, accountId } = useThreads()
@@ -41,8 +43,39 @@ const Component = ({ replyDetails }: { replyDetails: RouterOutputs['account']['g
 
   }, [threadId, replyDetails])
   
+  // invoke the sendEmail function defined in: api\routers\accounts.ts
+  const sendEmail = api.account.sendEmail.useMutation()
+
+  // handleSend function to send email
   const handleSend = async (value: string) => {
-    console.log("Sending...", value)
+    if (!replyDetails) return
+    sendEmail.mutate({
+      accountId, 
+      threadId: threadId ?? undefined,
+      body: value,
+      subject,
+      from: replyDetails.from,
+      to: (replyDetails.to ?? []).map(to => ({ address: to.address ?? '', name: to.name ?? '' })),
+      cc: replyDetails.cc.map(cc => ({ address: cc.address ?? '', name: cc.name ?? '' })),
+      // bcc: replyDetails.bcc.map(bcc => ({ address: bcc.address ?? '', name: bcc.name ?? '' })),
+      replyTo: replyDetails.from,
+      inReplyTo: replyDetails.id,
+    }, {
+      onSuccess: () => {
+        toast({
+          title: "Signify AI",
+          description: "Email Sent!",
+        })
+        console.log("Email sent")
+      },
+      onError: (error) => {
+        console.log("Error sending email", error)
+        toast({
+          title: "Signify AI",
+          description: "Error sending email",
+        })
+      }
+    })
   }
 
   return (
@@ -59,7 +92,7 @@ const Component = ({ replyDetails }: { replyDetails: RouterOutputs['account']['g
           to={replyDetails.to.map(to => to.address)}       
           
           handleSend={handleSend}
-          isSending={false}
+          isSending={sendEmail.isPending}
         />
   )
 }

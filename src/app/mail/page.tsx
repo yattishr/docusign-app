@@ -4,6 +4,8 @@ import React from "react";
 // import Mail from './mail'
 import dynamic from "next/dynamic";
 import ThemeToggle from "@/components/ui/theme-toggle";
+import { UserButton } from "@clerk/nextjs";
+import ComposeButton from "./compose-button";
 
 const Mail = dynamic(
   () => {
@@ -18,7 +20,11 @@ const MailDashboard = () => {
   return (
     <>
       <div className="absolute bottom-4 left-4">
-        <ThemeToggle />
+        <div className="flex items-center">
+          <UserButton />
+          <ThemeToggle />
+          <ComposeButton />
+        </div>
       </div>
       <Mail
         defaultLayout={[20, 32, 48]}

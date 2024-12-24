@@ -57,7 +57,6 @@ const Component = ({ replyDetails }: { replyDetails: RouterOutputs['account']['g
       from: replyDetails.from,
       to: (replyDetails.to ?? []).map(to => ({ address: to.address ?? '', name: to.name ?? '' })),
       cc: replyDetails.cc.map(cc => ({ address: cc.address ?? '', name: cc.name ?? '' })),
-      // bcc: replyDetails.bcc.map(bcc => ({ address: bcc.address ?? '', name: bcc.name ?? '' })),
       replyTo: replyDetails.from,
       inReplyTo: replyDetails.id,
     }, {

@@ -11,50 +11,100 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from "@/components/ui/drawer";
+import { toast, useToast } from "@/hooks/use-toast";
 import { PencilIcon } from "lucide-react";
 import EmailEditor from "./email-editor";
 import { useState } from "react";
+import { api } from "@/trpc/react";
+import useThreads from "../hooks/use-threads";
+import { useLocalStorage } from "usehooks-ts";
 
 const ComposeButton = () => {
- const [ toValues, setTovalues ] = useState<{label: string, value: string}[]>([])
- const [ ccValues, setCCvalues ] = useState<{label: string, value: string}[]>([])
- const [ subject, setSubject ] = useState<string>('')
+  const [open, setOpen] = useState(false);
+  // const [accountId] = useLocalStorage('accountId', '')
+  const [toValues, setTovalues] = useState<{ label: string; value: string }[]>([]);
+  const [ccValues, setCCvalues] = useState<{ label: string; value: string }[]>([]);
+  const [subject, setSubject] = useState<string>("");
+  // const { data: account } =  api.account.  api.mail.getMyAccount.useQuery({ accountId })
 
- const handleSend = async(value: string) => {
-    console.log('Sending...value: ', value)
- }
+  const sendEmail = api.account.sendEmail.useMutation();
+  const account = useThreads();
 
+  const handleSend = async (value: string) => {
+    console.log("Sending...value: ", value);
+    if (!account) return;
+    sendEmail.mutate(
+      {
+        accountId: account.accountId,
+        threadId: undefined,
+        body: value,
+        // from: {
+        //   name: account?.name ?? "Me",
+        //   address: account.emailAddress ?? "me@example.com",
+        // },
+        from: {
+          name: "Me",
+          address: "yattish@gmail.com",
+        },
+        to: toValues.map((to) => ({ name: to.value, address: to.value })),
+        cc: ccValues.map((cc) => ({ name: cc.value, address: cc.value })),
+        // replyTo: {
+        //   name: account?.name ?? "Me",
+        //   address: account?.emailAddress ?? "me@example.com",
+        // },
+        replyTo: {
+          name: "Me",
+          address: "yattish@gmail.com",
+        },
+        subject: subject,
+        inReplyTo: undefined,
+      },
+      {
+        onSuccess: () => {
+          console.log("Email sent successfully");
+          toast({
+            title: "Signify AI",
+            description: "Email Sent!",
+          });
+          setOpen(false);
+        },
+        onError: (error) => {
+          console.log("Error sending email", error);
+          toast({
+            title: "Signify AI",
+            description: "Error sending email",
+          });
+        },
+      },
+    )};
 
-
-
-  return (
-    <Drawer>
-      <DrawerTrigger>
-        <Button>
-            <PencilIcon className="size-4 mr-1"/>
+    return (
+      <Drawer>
+        <DrawerTrigger>
+          <Button>
+            <PencilIcon className="mr-1 size-4" />
             Compose
-        </Button>
-      </DrawerTrigger>
-      <DrawerContent>
-        <DrawerHeader>
-          <DrawerTitle>Compose Email</DrawerTitle>
-          {/* <DrawerDescription>This action cannot be undone.</DrawerDescription> */}
-        </DrawerHeader>
-        <EmailEditor 
+          </Button>
+        </DrawerTrigger>
+        <DrawerContent>
+          <DrawerHeader>
+            <DrawerTitle>Signify AI - Compose Email</DrawerTitle>
+            {/* <DrawerDescription>This action cannot be undone.</DrawerDescription> */}
+          </DrawerHeader>
+          <EmailEditor
             toValues={toValues}
             setToValues={setTovalues}
             ccValues={ccValues}
             setCCValues={setCCvalues}
             subject={subject}
             setSubject={setSubject}
-            to={toValues.map(to => to.value)}
+            to={toValues.map((to) => to.value)}
             defaultToolbarExpanded={true}
             handleSend={handleSend}
-            isSending={false}
-        />
-      </DrawerContent>
-    </Drawer>
-  );
-};
-
-export default ComposeButton;
+            isSending={sendEmail.isPending}
+          />
+        </DrawerContent>
+      </Drawer>
+    );
+  };
+export default ComposeButton

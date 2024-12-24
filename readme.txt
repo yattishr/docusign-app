@@ -1,6 +1,10 @@
 to start Prisma studio: npx prisma studio
 to push updates to Prisma Db: npx prisma db push
 
+
+Aurinko Email API Docs: 
+https://docs.aurinko.io/unified-apis/email-api#email-api-endpoints
+
 Webhook URL: https://mhz-promotion-relatively-winter.trycloudflare.com 
 
 Clerk Dashboard: https://dashboard.clerk.com/

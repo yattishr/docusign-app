@@ -2,13 +2,29 @@ import { db } from "@/server/db";
 import { EmailMessage, EmailAddress, EmailAttachment } from "@/types";
 import pLimit from "p-limit"
 import { threadId } from "worker_threads";
+import { OramaClient } from "./orama";
 
 export async function syncEmailsToDatabase(emails: EmailMessage[], accountId: string) {
-    console.log(`Email sync from syncEmailsToDatabase initiated. Syncing ${emails.length} emails to database.`)
+    console.log(`--- Email sync from syncEmailsToDatabase initiated. Syncing ${emails.length} emails to database. ---`)
     const limit = pLimit(1)
+
+    // save emails to OramaClient
+    const orama = new OramaClient(accountId)
+    console.log('--- sync-to-db: Initializing OramaClient ---')
 
     try {
         for (const email of emails) {
+            // save email details to orama
+            await orama.insert({
+                subject: email.subject,
+                body: email.body,
+                from: email.from.address,
+                to: email.to.map(to => to.address),
+                sentAt: email.sentAt.toLocaleString(),
+                threadId: email.threadId                
+            })
+
+            // upsert email to database
             await upsertEmail(email, accountId, 0)
         }
     } catch (error) {

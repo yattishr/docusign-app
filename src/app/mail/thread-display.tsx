@@ -18,15 +18,18 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { format } from "date-fns";
 import EmailDisplay from "./email-display";
 import ReplyBox from "./reply-box";
-
+import { useAtom } from "jotai";
+import { isSearchingAtom } from "@/components/mail/search-bar";
+import SearchDisplay from "@/components/mail/search-display";
 
 const ThreadDisplay = () => {
   const { threadId, threads } = useThreads();
   const thread = threads?.find((t) => t.id === threadId);
+  const [isSearching] = useAtom(isSearchingAtom);
 
   return (
     <div className="flex h-full flex-col">
@@ -56,7 +59,12 @@ const ThreadDisplay = () => {
         <div className="ml-auto flex items-center">
           <DropdownMenu>
             <DropdownMenuTrigger>
-              <Button className="ml-2" variant={"ghost"} size="icon" disabled={!thread}>
+              <Button
+                className="ml-2"
+                variant={"ghost"}
+                size="icon"
+                disabled={!thread}
+              >
                 <MoreVerticalIcon className="size-4" />
               </Button>
             </DropdownMenuTrigger>
@@ -72,72 +80,76 @@ const ThreadDisplay = () => {
       </div>
 
       <Separator />
-      {/* Threads Display */}
-      {thread ? 
+      {isSearching ? (
+        <SearchDisplay />
+      ) : (
         <>
-            {/* Display the thread */}
-            <div className="flex flex-col flex-1 overflow-scroll">
+          {thread ? (
+            <>
+              {/* Display the thread */}
+              <div className="flex flex-1 flex-col overflow-scroll">
                 <div className="flex items-center p-4">
-                    <div className="flex items-center gap-4 text-sm">
-                        <Avatar>
-                            <AvatarImage alt="avatar"/>
-                            <AvatarFallback>
-                                {thread.emails[0]?.from?.name?.split(' ').map(chunk => chunk[0]).join('')}
-                            </AvatarFallback>
-                            
-
-                        </Avatar>
-                        <div className="grid gap-1">
-                            <div className="font-semibold">
-                                {thread.emails[0]?.from?.name}
-                                <div className="text-xs line-clamp-1">
-                                    {thread.emails[0]?.subject}
-                                </div>
-
-                                {/* Reply To */}
-                                <div className="text-xs line-clamp-1">
-                                    <span className="font-medium">
-                                        Reply-To:
-                                    </span>
-                                    {thread.emails[0]?.from?.address}
-                                </div>                             
-                            </div>
+                  <div className="flex items-center gap-4 text-sm">
+                    <Avatar>
+                      <AvatarImage alt="avatar" />
+                      <AvatarFallback>
+                        {thread.emails[0]?.from?.name
+                          ?.split(" ")
+                          .map((chunk) => chunk[0])
+                          .join("")}
+                      </AvatarFallback>
+                    </Avatar>
+                    <div className="grid gap-1">
+                      <div className="font-semibold">
+                        {thread.emails[0]?.from?.name}
+                        <div className="line-clamp-1 text-xs">
+                          {thread.emails[0]?.subject}
                         </div>
+
+                        {/* Reply To */}
+                        <div className="line-clamp-1 text-xs">
+                          <span className="font-medium">Reply-To:</span>
+                          {thread.emails[0]?.from?.address}
+                        </div>
+                      </div>
                     </div>
+                  </div>
 
-                    {/* Sent At Email Date */}
-                    {thread.emails[0]?.sentAt && (
-                        <div className="ml-auto text-xs text-muted-foreground">
-                            {format(new Date(thread.emails[0]?.sentAt), 'PPpp')}
-                        </div>
-                    )}
+                  {/* Sent At Email Date */}
+                  {thread.emails[0]?.sentAt && (
+                    <div className="ml-auto text-xs text-muted-foreground">
+                      {format(new Date(thread.emails[0]?.sentAt), "PPpp")}
+                    </div>
+                  )}
                 </div>
 
                 <Separator />
-                <div className="max-h-[calc(100vh-500px)] overflow-scroll flex flex-col">
-                    <div className="p-6 flex flex-col gap-4">
-                        {thread.emails.map(email => {
-                            return <EmailDisplay key={email.id} email={email} />
-                        })}
-                    </div>
+                <div className="flex max-h-[calc(100vh-500px)] flex-col overflow-scroll">
+                  <div className="flex flex-col gap-4 p-6">
+                    {thread.emails.map((email) => {
+                      return <EmailDisplay key={email.id} email={email} />;
+                    })}
+                  </div>
                 </div>
 
                 <div className="flex-1">
-                    <Separator className="mt-auto"/>                    
-                    <ReplyBox />
+                  <Separator className="mt-auto" />
+                  <ReplyBox />
                 </div>
-
-            </div>        
-        </> : 
-
-        <>
-        {/* No message selected */}
-            <div className="p-8 text-center text-muted-foreground">
+              </div>
+            </>
+          ) : (
+            <>
+              {/* No message selected */}
+              <div className="p-8 text-center text-muted-foreground">
                 No message selected.
-            </div>
+              </div>
+            </>
+          )}
         </>
-      }
+      )}
 
+      {/* Threads Display */}
     </div>
   );
 };

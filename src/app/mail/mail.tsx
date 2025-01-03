@@ -24,6 +24,7 @@ import AccountSwitcher from "./account-switcher";
 import SideBar from "./sidebar";
 import ThreadList from "./thread-list";
 import ThreadDisplay from "./thread-display";
+import SearchBar from "@/components/mail/search-bar";
 
 type Props = {
   defaultLayout: number[] | undefined;
@@ -86,8 +87,9 @@ const Mail = ({ defaultLayout = [20, 32, 48], navCollapsedSize, defaultCollapsed
             </div>
 
             <Separator />
+            
             {/* Search Bar */}
-            Search Bar
+            <SearchBar />
 
             <TabsContent value="inbox">
                 <ThreadList />

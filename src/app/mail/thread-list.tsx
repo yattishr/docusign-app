@@ -8,7 +8,6 @@ import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 import DOMPurify from 'dompurify'
 import { Badge } from "@/components/ui/badge"
-import { threadId } from 'worker_threads'
 
 const ThreadList = () => {
   const { threads, threadId, setThreadId } = useThreads()

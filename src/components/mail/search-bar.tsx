@@ -3,7 +3,6 @@ import { Loader2, Search, X } from 'lucide-react'
 import { Input } from '@/components/ui/input'
 import { atom, useAtom } from 'jotai'
 import useThreads from '@/app/hooks/use-threads'
-import { set } from 'date-fns'
 
 export const searchValueAtom = atom('')
 export const isSearchingAtom = atom(false)

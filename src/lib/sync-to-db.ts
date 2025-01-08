@@ -1,8 +1,9 @@
 import { db } from "@/server/db";
 import { EmailMessage, EmailAddress, EmailAttachment } from "@/types";
 import pLimit from "p-limit"
-import { threadId } from "worker_threads";
 import { OramaClient } from "./orama";
+import { turndown } from "./turndown";
+import { getEmbeddings } from "./embeddings";
 
 export async function syncEmailsToDatabase(emails: EmailMessage[], accountId: string) {
     console.log(`--- Email sync from syncEmailsToDatabase initiated. Syncing ${emails.length} emails to database. ---`)
@@ -12,23 +13,41 @@ export async function syncEmailsToDatabase(emails: EmailMessage[], accountId: st
     const orama = new OramaClient(accountId)
     console.log('--- sync-to-db: Initializing OramaClient ---')
 
-    try {
-        for (const email of emails) {
-            // save email details to orama
-            await orama.insert({
-                subject: email.subject,
-                body: email.body,
-                from: email.from.address,
-                to: email.to.map(to => to.address),
-                sentAt: email.sentAt.toLocaleString(),
-                threadId: email.threadId                
-            })
+    for (const email of emails) {
+        const body = turndown.turndown(email.body ?? email.bodySnippet ?? '')
+        const embeddings = await getEmbeddings(body)
 
-            // upsert email to database
-            await upsertEmail(email, accountId, 0)
+        // Format the document to ensure compatability with Orama
+        const formattedDocument = {
+            subject: email.subject ?? '', // Default to empty string if undefined
+            body: body,
+            rawBody: 'TEST RAW BODY SNIPPET',
+            from: email.from?.name
+                ? `${email.from.name} <${email.from.address}>`
+                : email.from.address ?? 'Unkown Sender',
+            to: email.to?.map(to => `${to.name} <${to.address}>`).join(', ') ?? '', // Convert to string
+            sentAt: new Date(email.sentAt).toISOString(),
+            threadId: email.threadId ?? 'Unknown Thread Id',
+            embeddings: embeddings,
+        };
+
+        // Log the formatted document for debugging
+        console.log('Formatted document for Orama insertion: ', formattedDocument)
+
+        // Insert the formatted document into Orama
+        try {
+            await orama.insert(formattedDocument)
+            console.log('Document successfully inserted into Orama')
+        } catch (error) {
+            console.error('Failed to insert document into Orama index: ', error)
         }
-    } catch (error) {
-        console.error("Oooopsss. Error occured in syncEmailsToDatabase while sync-ing Emails.", error)
+
+        // Upsert email into Prisma database
+        try {
+            await upsertEmail(email, accountId, 0)    
+        } catch (error) {
+            console.error('Failed to upsert email into Prisma database: ', error)   
+        }        
     }
 }
 

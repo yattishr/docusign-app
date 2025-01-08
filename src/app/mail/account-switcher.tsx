@@ -51,7 +51,7 @@ const AccountSwitcher = ({isCollapsed}: Props) => {
             {data.map((account) => {
                 return (
                     <SelectItem key={accountId} value={account.id}>
-                        {account.emailAddress}
+                        {account.emailAddress} + {account.id}
                     </SelectItem>
                 )
             })}

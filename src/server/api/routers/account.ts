@@ -249,8 +249,18 @@ export const accountRouter = createTRPCRouter({
       })).mutation(async ({ ctx, input }) => {
         const account = await authorizeAccountAccess(input.accountId, ctx.auth.userId)
         const orama = new OramaClient(account.id)
+        
+        console.log(`--- Returning accountId: ${JSON.stringify(account.id)} from searchEmails API route.`)
+
+        // Initialize Orama Client
         await orama.initialize()
+
+        // List all documents in Orama Index
+        await orama.listDocuments()
+
+        // Search Orama Index & return results
         const results = await orama.search({term: input.query})
+        console.log(`--- Returning results: ${JSON.stringify(results)} from searchEmails API route.`)
         return results
     }),
 });

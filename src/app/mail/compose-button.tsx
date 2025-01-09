@@ -17,25 +17,25 @@ import EmailEditor from "./email-editor";
 import { useState } from "react";
 import { api } from "@/trpc/react";
 import useThreads from "../hooks/use-threads";
-import { useLocalStorage } from "usehooks-ts";
 
 const ComposeButton = () => {
   const [open, setOpen] = useState(false);
-  // const [accountId] = useLocalStorage('accountId', '')
   const [toValues, setTovalues] = useState<{ label: string; value: string }[]>([]);
   const [ccValues, setCCvalues] = useState<{ label: string; value: string }[]>([]);
   const [subject, setSubject] = useState<string>("");
-  // const { data: account } =  api.account.  api.mail.getMyAccount.useQuery({ accountId })
+
+  const { accountId } = useThreads()
 
   const sendEmail = api.account.sendEmail.useMutation();
-  const account = useThreads();
+
 
   const handleSend = async (value: string) => {
     console.log("Sending...value: ", value);
-    if (!account) return;
+    if (!accountId) return;
+
     sendEmail.mutate(
       {
-        accountId: account.accountId,
+        accountId: accountId,
         threadId: undefined,
         body: value,
         // from: {

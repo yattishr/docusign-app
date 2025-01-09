@@ -124,7 +124,7 @@ export class Account {
                     returnIds: true,
                 },
                 headers: {
-                    Authorization: `Bearer: ${this.token}`
+                    Authorization: `Bearer ${this.token}`
                 }
             })
             console.log('--- Email sent ---', response.data)

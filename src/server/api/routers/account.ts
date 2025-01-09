@@ -263,6 +263,15 @@ export const accountRouter = createTRPCRouter({
         console.log(`--- Returning results: ${JSON.stringify(results)} from searchEmails API route.`)
         return results
     }),
+
+    // get My Account
+    getMyAccount: privateProcedure.input(z.object({
+      accountId: z.string()
+    })).query(async ({ ctx, input}) => {
+      const account = await authorizeAccountAccess(input.accountId, ctx.auth.userId)
+      return account;
+    })
+
 });
 
 // NB: A mutation is a function you can call to perform an action of the server.

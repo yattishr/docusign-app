@@ -13,6 +13,7 @@ export async function syncEmailsToDatabase(emails: EmailMessage[], accountId: st
     // save emails to OramaClient
     const orama = new OramaClient(accountId)
     console.log('--- sync-to-db: Initializing OramaClient ---')
+    orama.initialize()
 
     for (const email of emails) {
         const body = turndown.turndown(email.body ?? email.bodySnippet ?? '')

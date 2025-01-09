@@ -6,6 +6,7 @@ import { Button } from "./button";
 export const LinkAccountButton = () => {
   return (
     <Button
+      className="text-lg px-8 py-3"
       onClick={async () => {
         const authUrl = await getAurinkoAuthUrl("Google");
         console.log(`Logging authUrl from link-account-button: ${authUrl}`)

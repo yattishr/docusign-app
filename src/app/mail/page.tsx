@@ -1,7 +1,6 @@
 "use client";
 
 import React from "react";
-// import Mail from './mail'
 import dynamic from "next/dynamic";
 import ThemeToggle from "@/components/ui/theme-toggle";
 import { UserButton } from "@clerk/nextjs";
@@ -20,7 +19,7 @@ const MailDashboard = () => {
   return (
     <>
       <div className="absolute bottom-4 left-4">
-        <div className="flex items-center">
+        <div className="flex flex-row gap-3 items-center justify-between w-full">
           <UserButton />
           <ThemeToggle />
           <ComposeButton />

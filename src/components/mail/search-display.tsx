@@ -5,7 +5,7 @@ import { useAtom } from 'jotai'
 import React, { useEffect } from 'react'
 import { searchValueAtom } from './search-bar'
 import { api } from "@/trpc/react";
-import { useDebounceValue, useLocalStorage } from 'usehooks-ts'
+import { useDebounceValue } from 'usehooks-ts'
 import useThreads from '@/app/hooks/use-threads';
 
 const SearchDisplay = () => {
@@ -33,8 +33,8 @@ const SearchDisplay = () => {
   return (
     <div className='p-4 max-h-[calc(100vh-50px)] overflow-y-scroll'>
         <div className='flex items-center gap-2 mb-4'>
-            <h2 className='text-gray-800 text-sm dark:text-gray-400'>
-                Your search query for &quot;{searchValue}&quot; returned {search.data?.hits.length} results...
+            <h2 className='text-gray-800 text-sm dark:text-gray-400'>                
+                {search.data?.hits.length ?? 0 > 0 ? (<p>Your search query for &quot;{searchValue}&quot; returned {search.data?.hits.length} results...</p>) : (<p>Your search query for &quot;{searchValue}&quot; returned 0 results...</p>)}
             </h2>
         </div>
 

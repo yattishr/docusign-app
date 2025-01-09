@@ -80,7 +80,12 @@ export class OramaClient {
 
     // search the orama index for a term
     async search({term}: {term: string}) {
+        console.log('--- Inside Orama Search with term: ', term)
+
+        // Perform the Orama Search
         const results = await search(this.orama, { term: term });
+
+        // Log the results to the console.
         console.log('Search results:', results);
         return results;
     }
@@ -114,19 +119,30 @@ export class OramaClient {
         console.log('All documents', results.hits)
     }
 
-    async vectorSearch({ term }: {term: string}) {
-        // vector embed the search term
-        const embeddings = await getEmbeddings(term)
-        const results = await search(this.orama, {
-            mode: 'hybrid',
-            term: term,
-            vector: {
-                value: embeddings,
-                property: 'embeddings'
-            },
-            similarity: 0.8,
-            limit: 10
-        })
-        return results
+    async vectorSearch({ prompt }: {prompt: string}) {
+        try {
+            // vector embed the input Query
+            const embeddings = await getEmbeddings(prompt)
+            
+            const results = await search(this.orama, {
+                mode: 'hybrid',
+                term: prompt,
+                vector: {
+                    value: embeddings,
+                    property: 'embeddings'
+                },
+                similarity: 0.8,
+                limit: 10
+            })
+
+            // Log the results to console for debugging.
+            console.log(`--- Logging Results: ${results}`)
+
+            // Return the results back to the Chat API.
+            return results
+        } catch (error) {
+            console.error('Error in vectorSearch:', error);
+            throw error;
+        }        
     }
 }

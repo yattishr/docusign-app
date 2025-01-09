@@ -11,16 +11,31 @@ const openai = new OpenAIApi(config)
 
 export async function POST(req:Request) {
     try {
+
+        // Check if the user is authorised to perform the action.
         const { userId } = await auth()
         if (!userId) {
             return new Response('Unauthorised', { status: 401})
         }
+        
+        // Destructure the accountId and the messages from the request.
         const { accountId, messages } = await req.json()
+        
+        // Initialize Orama Client.
         const orama = new OramaClient(accountId)
         await orama.initialize()
+        
+        // fetch the last message as context
         const lastMessage = messages[messages.length - 1]
         console.log('--- Logging last message from Chat API: ', lastMessage)
-        const context = await orama.vectorSearch({term: lastMessage.content})
+
+        // Verify that Orama client is properly initialized.
+        if (!orama) {
+            throw new Error('Orama index is not initialized.')
+        }
+
+        // Pass the context into the Orama Vector search.
+        const context = await orama.vectorSearch({prompt: lastMessage.content})
         console.log('--- Logging context: ', context.hits.length + ' hits found ---')
 
         // System prompt
@@ -54,8 +69,6 @@ export async function POST(req:Request) {
         // We dont have OpenAIStream available so we dump the response into 'stream' for now.
         // const stream = response
         return response
-
-        // return new Response('OK', {status: 200})
 
     } catch (error) {
         console.error('Error occured in Chat API endpoint: ', error)

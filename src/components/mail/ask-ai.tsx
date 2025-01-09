@@ -3,7 +3,6 @@ import { cn } from '@/lib/utils';
 import { AnimatePresence, motion } from 'framer-motion';
 import { SendIcon, SparkleIcon } from 'lucide-react';
 import { useChat } from 'ai/react'
-import { use } from 'react';
 import useThreads from '@/app/hooks/use-threads';
 
 const AskAI = ({isCollapsed}: {isCollapsed: boolean}) => {
@@ -24,7 +23,7 @@ const AskAI = ({isCollapsed}: {isCollapsed: boolean}) => {
 
   return (
     <div className="p-4 mb-14">
-        <motion.div className='flex flex-1 flex-col items-end pb-4 p-4 rounded-lg bg-gray-100 shadow-inner dark:bg-gray-900'>
+        <motion.div className='flex flex-1 flex-col items-end pb-4 p-4 rounded-lg bg-gray-400 shadow-inner dark:bg-gray-900'>
             <div className='max-h-[50vh] overflow-y-scroll w-full flex flex-col gap-2' id='message-container'>
                 <AnimatePresence mode='wait'>
                    {messages.map(message => {

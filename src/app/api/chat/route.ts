@@ -1,5 +1,4 @@
 import { Configuration, OpenAIApi} from 'openai-edge'
-// import { Message, OpenAIStream, StreamingTextResponse } from 'ai'
 import { Message } from 'ai'
 import { auth } from '@clerk/nextjs/server'
 import { OramaClient } from '@/lib/orama'

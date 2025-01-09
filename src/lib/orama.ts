@@ -1,4 +1,4 @@
-import { db } from '@/server/db';
+import { db } from '../server/db';
 import { create, insert, search, type AnyOrama } from '@orama/orama'
 import { restore, persist } from '@orama/plugin-data-persistence'
 import { getEmbeddings } from './embeddings';

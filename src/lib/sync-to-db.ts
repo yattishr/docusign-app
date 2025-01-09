@@ -1,4 +1,5 @@
-import { db } from "@/server/db";
+// import { db } from "@/server/db";
+import { db } from '../server/db';
 import { EmailMessage, EmailAddress, EmailAttachment } from "@/types";
 import pLimit from "p-limit"
 import { OramaClient } from "./orama";

@@ -36,7 +36,7 @@ const ThreadDisplay = () => {
 
   const handleDocuSignAuth = () => {
     const clientId = process.env.NEXT_PUBLIC_DS_CLIENT_ID
-    const redirectUri = encodeURIComponent('http://localhost:3000/')
+    const redirectUri = encodeURIComponent('http://localhost:3000/mail')
     const docusignUrl = `https://account-d.docusign.com/oauth/auth?response_type=code&scope=signature&client_id=${clientId}&redirect_uri=${redirectUri}`;
     // window.location.href = docusignUrl
 
@@ -74,7 +74,7 @@ const ThreadDisplay = () => {
         {/* Docusign button to obtain Code */}
         <Button
           className="ml-2"
-          variant={"secondary"}
+          variant={"outline"}
           size="icon"
           onClick={handleDocuSignAuth}
         >          

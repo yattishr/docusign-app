@@ -11,6 +11,8 @@ import TagInput from './tag-input'
 import AIComposeButton from './ai-compose-button'
 import { generate } from './action'
 import { readStreamableValue } from 'ai/rsc'
+import { PencilIcon, SendIcon, SparkleIcon } from 'lucide-react'
+import { useLocalStorage } from 'usehooks-ts'
 
 type Props = {
     subject: string
@@ -34,6 +36,7 @@ const EmailEditor = ({subject, setSubject, toValues, setToValues, ccValues, setC
   const [value, setValue] = useState<string>('')
   const [expanded, setExpanded] = useState<boolean>(defaultToolbarExpanded)
   const [ token, setToken ] = useState<string>('')
+  const [ accountId ] = useLocalStorage('accountId', '');
 
   const [generation, setGeneration] = useState('')
 
@@ -50,7 +53,7 @@ const EmailEditor = ({subject, setSubject, toValues, setToValues, ccValues, setC
     addKeyboardShortcuts() {
         return {
             'Meta-m': () => {
-                console.log('Meta-j')
+                console.log('Meta-m')
                 aiGenerate(this.editor.getText())
                 return true
             }
@@ -116,7 +119,7 @@ const EmailEditor = ({subject, setSubject, toValues, setToValues, ccValues, setC
         </div>
       </div>
 
-      <div className="prose w-full px-4">
+      <div className="prose w-full px-4 border border-green-100">
         <EditorContent editor={editor} value={value} />
       </div>
 
@@ -130,14 +133,23 @@ const EmailEditor = ({subject, setSubject, toValues, setToValues, ccValues, setC
           </kbd>{" "}
           for AI autocomplete
         </span>
-        <Button
-            onClick={async() => {
-                editor?.commands?.clearContent()
-                await handleSend(value)
-            }}
-            disabled={isSending}>
-        Send
-        </Button>
+        
+        <div className='flex flex-row gap-3'>
+          <Button>            
+            <SparkleIcon />
+            AI Complete
+          </Button>
+
+          <Button
+              onClick={async() => {
+                  editor?.commands?.clearContent()
+                  await handleSend(value)
+              }}
+              disabled={isSending}>
+                <SendIcon />
+          Send
+          </Button>
+        </div>
       </div>
     </div>
   );

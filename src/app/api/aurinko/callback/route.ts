@@ -4,7 +4,6 @@ import { auth, EmailAddress } from "@clerk/nextjs/server";
 import { NextRequest, NextResponse } from "next/server";
 import {waitUntil} from '@vercel/functions';
 import axios from "axios";
-import { getAccessToken } from "@/lib/docusign";
 
 export const GET = async (req: NextRequest) => {
   const { userId } = await auth();

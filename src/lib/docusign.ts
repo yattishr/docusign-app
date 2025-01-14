@@ -1,47 +1,25 @@
-import jwt from "jsonwebtoken";
-import fetch from 'node-fetch';
+"use server"
+import { auth } from "@clerk/nextjs/server";
+import axios from "axios"
 
 const privateKey = ``
-
 const integrationKey = ''
 const userId = ''
 const accountBaseUrl = ''
 const apiAccountId = ''
 
-// Generate the JWT
-const jwtToken = jwt.sign(
-    {
-        sub: userId,
-        iss: integrationKey,
-        aud: accountBaseUrl,
-        scope: 'signature impersonation'
-    },
-    privateKey,
-    {algorithm: 'RS256', expiresIn: '1h'} // Token valid for 1 hour
-);
-
 // Exchange JWT for Access token
-export async function getAccessToken() {
+export async function getAccessToken(code: string) {
     try {
-        const response = await fetch(`${accountBaseUrl}/oauth/token`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-            body: new URLSearchParams({
-                grant_type: 'urn:ietf:params:oauth:grant-type:jwt-bearer',
-                assertion: jwtToken
-            })
-        });
 
-        if (!response.ok) {
-            const error = await response.json();
-            console.error('Error obtaining access token: ', error)
-            throw new Error('Failed to fetch access token.')
-        }
+        // Validate if the user is authenticated. Raise an error if unauthorized.
+        const { userId } = await auth();
+        if (!userId) throw new Error("Unauthorised access");
 
-        // Fetch the Docusign access token
-        const tokenData = await response.json()
-        console.log('Docusign Access token: ', tokenData)
-        // return tokenData
+        // Get the Code from the URL Params
+        const params = new URLSearchParams({
+            
+        })
 
     } catch (error) {
         console.error('Docusign Error: ', error)

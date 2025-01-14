@@ -66,7 +66,7 @@ const AskAI = ({isCollapsed}: {isCollapsed: boolean}) => {
                             <SparkleIcon className='size-6 text-gray-600'/>
                             <div>
                                 <p className='text-gray-900 dark:text-gray-100'>
-                                    Ask Signify-AI anything about your documents and emails
+                                    Ask <span className='text-indigo-600 font-bold text-md'>Signify Genie</span> anything about your documents and emails
                                 </p>
                                 <p className='text-gray-400 text-xs dark:text-gray-100'>
                                     Get AI answers on your documents and emails

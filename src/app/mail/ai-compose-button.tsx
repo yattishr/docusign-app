@@ -60,7 +60,7 @@ const AIComposeButton = (props: Props) => {
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger>
+      <DialogTrigger asChild>
         <Button size='icon' variant={'outline'} onClick={() => setOpen(true)}>
             <BotIcon className="size-5"/>
         </Button>

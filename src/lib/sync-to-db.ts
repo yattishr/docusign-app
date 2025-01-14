@@ -10,13 +10,15 @@ export async function syncEmailsToDatabase(emails: EmailMessage[], accountId: st
     console.log(`--- Email sync from syncEmailsToDatabase initiated. Syncing ${emails.length} emails to database. ---`)
     const limit = pLimit(1)
 
-    // save emails to OramaClient
+    // Initialize the Orama Client
     const orama = new OramaClient(accountId)
     console.log('--- sync-to-db: Initializing OramaClient ---')
     orama.initialize()
 
     for (const email of emails) {
         const body = turndown.turndown(email.body ?? email.bodySnippet ?? '')
+        
+        // Create vector embeddings of the Emails body.
         const embeddings = await getEmbeddings(body)
 
         // Format the document to ensure compatability with Orama
@@ -34,9 +36,9 @@ export async function syncEmailsToDatabase(emails: EmailMessage[], accountId: st
         };
 
         // Log the formatted document for debugging
-        console.log('Formatted document for Orama insertion: ', formattedDocument)
+        // console.log('Formatted document for Orama insertion: ', formattedDocument)
 
-        // Insert the formatted document into Orama
+        // Insert the formatted document into Orama. Raise an error if the insert fails.
         try {
             await orama.insert(formattedDocument)
             console.log('Document successfully inserted into Orama')

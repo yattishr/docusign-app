@@ -256,7 +256,7 @@ export const accountRouter = createTRPCRouter({
         await orama.initialize()
 
         // List all documents in Orama Index
-        await orama.listDocuments()
+        // await orama.listDocuments()
 
         // Search Orama Index & return results
         const results = await orama.search({term: input.query})

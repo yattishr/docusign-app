@@ -6,6 +6,7 @@ import {
   Archive,
   ArchiveX,
   Clock,
+  CloudCogIcon,
   MoreVerticalIcon,
   Trash2Icon,
 } from "lucide-react";
@@ -25,11 +26,24 @@ import ReplyBox from "./reply-box";
 import { useAtom } from "jotai";
 import { isSearchingAtom } from "@/components/mail/search-bar";
 import SearchDisplay from "@/components/mail/search-display";
+import { useRouter } from "next/navigation";
 
 const ThreadDisplay = () => {
   const { threadId, threads } = useThreads();
   const thread = threads?.find((t) => t.id === threadId);
   const [isSearching] = useAtom(isSearchingAtom);
+  const router = useRouter();
+
+  const handleDocuSignAuth = () => {
+    const clientId = process.env.NEXT_PUBLIC_DS_CLIENT_ID
+    const redirectUri = encodeURIComponent('http://localhost:3000/')
+    const docusignUrl = `https://account-d.docusign.com/oauth/auth?response_type=code&scope=signature&client_id=${clientId}&redirect_uri=${redirectUri}`;
+    // window.location.href = docusignUrl
+
+    // Open the DocuSign authorization URL in a new tab
+    window.open(docusignUrl, '_blank');
+
+  }
 
   return (
     <div className="flex h-full flex-col">
@@ -54,6 +68,17 @@ const ThreadDisplay = () => {
           disabled={!thread}
         >
           <Clock className="size-4" />
+        </Button>
+        <Separator orientation="vertical" className="ml-2" />
+        
+        {/* Docusign button to obtain Code */}
+        <Button
+          className="ml-2"
+          variant={"secondary"}
+          size="icon"
+          onClick={handleDocuSignAuth}
+        >          
+          <CloudCogIcon className="mr-1 size-4" />
         </Button>
 
         <div className="ml-auto flex items-center">

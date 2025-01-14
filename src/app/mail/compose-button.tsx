@@ -80,7 +80,7 @@ const ComposeButton = () => {
 
     return (
       <Drawer>
-        <DrawerTrigger>
+        <DrawerTrigger asChild>
           <Button>
             <PencilIcon className="mr-1 size-4" />
             Compose
@@ -89,7 +89,6 @@ const ComposeButton = () => {
         <DrawerContent>
           <DrawerHeader>
             <DrawerTitle>Signify AI - Compose Email</DrawerTitle>
-            {/* <DrawerDescription>This action cannot be undone.</DrawerDescription> */}
           </DrawerHeader>
           <EmailEditor
             toValues={toValues}

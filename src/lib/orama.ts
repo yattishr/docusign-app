@@ -17,14 +17,11 @@ export class OramaClient {
     async saveIndex() {
         console.log('--- saving Orama index ---')
         const index = await persist(this.orama, 'json')
-        console.log('Persisted index:', JSON.stringify(index, null, 2))
 
         if (!index) { 
             console.log('Failed to persist orama index. Index is empty:', index)
             return
         }
-
-        console.log('Persisted index:', index);
 
         try {
             await db.account.update({
@@ -92,7 +89,7 @@ export class OramaClient {
 
     // insert a new document into the orama index
     async insert(document: any) {
-        console.log('Inserting document:', document);
+        // console.log('Inserting document:', document);
         
         const { subject, body, rawBody, from, to, sentAt, threadId } = document
         if (!subject || !body || !rawBody || !from || !to || !sentAt || !threadId) {
@@ -104,8 +101,8 @@ export class OramaClient {
         await insert(this.orama, document)
 
         // List documents after inserting for validation
-        const documents = await this.listDocuments()
-        console.log('Documents in index: ', documents)
+        // const documents = await this.listDocuments()
+        // console.log('Documents in index: ', documents)
 
         // Persist the index after inserting
         await this.saveIndex()
@@ -116,7 +113,7 @@ export class OramaClient {
     async listDocuments() {
         console.log('--- Listing all Orama documents ---')
         const results = await search(this.orama, {term: ''}) // Empy term to return all documents
-        console.log('All documents', results.hits)
+        // console.log('All documents', results.hits)
     }
 
     async vectorSearch({ prompt }: {prompt: string}) {
@@ -136,7 +133,7 @@ export class OramaClient {
             })
 
             // Log the results to console for debugging.
-            console.log(`--- Logging Results: ${results}`)
+            console.log(`--- Logging Results: ${JSON.stringify(results)}`)
 
             // Return the results back to the Chat API.
             return results

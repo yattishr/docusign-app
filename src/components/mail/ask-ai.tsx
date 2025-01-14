@@ -27,7 +27,16 @@ const AskAI = ({isCollapsed}: {isCollapsed: boolean}) => {
             <div className='max-h-[50vh] overflow-y-scroll w-full flex flex-col gap-2' id='message-container'>
                 <AnimatePresence mode='wait'>
                    {messages.map(message => {
-                    return <motion.div key={message.id} layout='position'
+                    if(!message.content) {
+                        return (
+                            <motion.div key="fallback" className="self-start bg-gray-200 text-gray-900 dark:bg-gray-800 dark:text-gray-100 rounded-2xl px-3 py-2">
+                                Sorry, I couldn't find enough context to help. Could you clarify your question or provide more details?
+                            </motion.div>
+                        )
+                    }
+
+                    return (
+                    <motion.div key={message.id} layout='position'
                     className={cn('z-10 mt-2 max-w-[250px] break-words rounded-2xl bg-gray-200 dark:bg-gray-800', {
                         'self-end text-gray-900 dark:text-gray-100': message.role === 'user',
                         'self-start bg-blue text-white': message.role === 'assistant'
@@ -42,6 +51,8 @@ const AskAI = ({isCollapsed}: {isCollapsed: boolean}) => {
                         </div>
                         
                     </motion.div>
+                    )
+                        
                    })}
                 </AnimatePresence>
             </div>

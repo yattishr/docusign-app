@@ -17,7 +17,8 @@ import { Separator } from "@/components/ui/separator"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 
 import { cn } from "@/lib/utils";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import AccountSwitcher from "./account-switcher";
 import SideBar from "./sidebar";
 import ThreadList from "./thread-list";
@@ -33,6 +34,21 @@ type Props = {
 
 const Mail = ({ defaultLayout = [20, 32, 48], navCollapsedSize, defaultCollapsed }: Props) => {
   const [ isCollapsed, setIsCollapsed ] = useState(defaultCollapsed)
+
+  // Code for retrieving the Docusign authorization code from the URL
+  const searchParams = useSearchParams();
+
+  useEffect(() => {
+    // Get the code paramater from the URL
+    const code = searchParams.get('code')
+    
+    if (code) {
+      console.log(`--- Authorization Code: ${code} ---`)
+    } else { 
+      console.log(`--- No Authorization Code found in URL ---`)
+      return 
+    }    
+  }, [searchParams])
 
   return (
     <TooltipProvider delayDuration={0}>

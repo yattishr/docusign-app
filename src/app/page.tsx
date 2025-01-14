@@ -76,7 +76,7 @@ export default function Home() {
             <div className="flex flex-row gap-3 mt-2 justify-center items-center">
               <LinkAccountButton />
               <Button asChild className="text-lg px-8 py-3">
-                <Link href="/mail">Get Started</Link>
+                <Link href="/mail">Mail Dashboard</Link>
               </Button>
             </div>
 

@@ -38,11 +38,7 @@ const ThreadDisplay = () => {
     const clientId = process.env.NEXT_PUBLIC_DS_CLIENT_ID
     const redirectUri = encodeURIComponent('http://localhost:3000/mail')
     const docusignUrl = `https://account-d.docusign.com/oauth/auth?response_type=code&scope=signature&client_id=${clientId}&redirect_uri=${redirectUri}`;
-    // window.location.href = docusignUrl
-
-    // Open the DocuSign authorization URL in a new tab
-    window.open(docusignUrl, '_blank');
-
+    window.location.href = docusignUrl
   }
 
   return (

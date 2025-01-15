@@ -1,6 +1,7 @@
 import { auth } from "@clerk/nextjs/server";
 import axios from "axios";
 import { NextRequest, NextResponse } from "next/server";
+import { db } from "@/server/db";
 
 export const POST = async (req: NextRequest) => {
     const tokenUrl = 'https://account-d.docusign.com/oauth/token'
@@ -17,6 +18,12 @@ export const POST = async (req: NextRequest) => {
     console.log(`Logging Authorization Code: ${auth_code}`);
 
     if (!auth_code) return NextResponse.json({ message: "Failed to obtain Authorization Code" },{ status: 400 });
+
+    // Fetch the Account details for the Logged in user.
+    const account = await db.account.findFirst({
+        where: {userId: userId},
+        orderBy: {id: 'desc'}
+    })
     
     try {
         // Prepare the payload for the token request
@@ -37,6 +44,16 @@ export const POST = async (req: NextRequest) => {
         console.log("Access token: ", access_token),
         console.log("Refresh token: ", refresh_token),
         console.log("Expires in: ", expires_in)
+
+        // Update Db with the access token and refresh token
+        await db.account.update({
+            where: {id: account?.id},
+            data: {
+                docusignAccessToken: access_token,
+                docusignRefreshToken: refresh_token,
+                updatedAt: new Date(),
+            }
+        })
 
         // Return tokens to the client
         return NextResponse.json({ access_token, refresh_token, expires_in}, {status: 200})

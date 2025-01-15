@@ -67,14 +67,14 @@ const ThreadDisplay = () => {
         </Button>
         <Separator orientation="vertical" className="ml-2" />
         
-        {/* Docusign button to obtain Code */}
+        {/* Docusign Connect Button */}
         <Button
-          className="ml-2"
+          className="ml-2 flex items-center"
           variant={"outline"}
-          size="icon"
           onClick={handleDocuSignAuth}
-        >          
-          <CloudCogIcon className="mr-1 size-4" />
+        >
+          <CloudCogIcon className="mr-2" />
+          DocuSign Connect
         </Button>
 
         <div className="ml-auto flex items-center">

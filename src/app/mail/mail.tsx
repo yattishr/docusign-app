@@ -39,15 +39,40 @@ const Mail = ({ defaultLayout = [20, 32, 48], navCollapsedSize, defaultCollapsed
   const searchParams = useSearchParams();
 
   useEffect(() => {
+    const fetchTokens = async () => {
     // Get the code paramater from the URL
     const code = searchParams.get('code')
     
     if (code) {
       console.log(`--- Authorization Code: ${code} ---`)
+
+      try {
+        const response = await fetch("/api/docusign", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({ code }),
+        })
+
+        const data = await response.json()
+        if (response.ok) {
+          console.log("Docusign Access token: ", data.access_token)
+          console.log("Docusign Refresh token: ", data.refresh_token)
+        } else {
+          console.error("Error fetching Docusign Access tokens: ", data)
+        }
+
+      } catch (error) {
+        console.error("Docusign Network error: ", error)
+      }
+
     } else { 
       console.log(`--- No Authorization Code found in URL ---`)
       return 
-    }    
+    }   
+  }
+    fetchTokens();
   }, [searchParams])
 
   return (

@@ -73,32 +73,9 @@ const AskAI = ({isCollapsed}: {isCollapsed: boolean}) => {
                                 </p>
                             </div>
                         </div>
-                        <div className='h-2'/>
-                        <div className='flex items-center gap-2 flex-wrap'>
-                            <span className='px-2 py-1 bg-gray-800 text-gray-200 rounded-md text-xs cursor-pointer' onClick={() => {
-                                handleInputChange({
-                                    target: { value: 'What can I ask?'}
-                                } as unknown as React.ChangeEvent<HTMLInputElement>)
-                            }}>
-                                What can I ask?
-                            </span>
-
-                            <span className='px-2 py-1 bg-gray-800 text-gray-200 rounded-md text-xs cursor-pointer' onClick={() => {
-                                handleInputChange({
-                                    target: { value: 'When is my next flight?'}
-                                } as unknown as React.ChangeEvent<HTMLInputElement>)
-                            }}>
-                                When is my next flight?
-                            </span>
-
-                            <span className='px-2 py-1 bg-gray-800 text-gray-200 rounded-md text-xs cursor-pointer' onClick={() => {
-                                handleInputChange({
-                                    target: { value: 'When is my next meeting?'}
-                                } as unknown as React.ChangeEvent<HTMLInputElement>)
-                            }}>
-                                When is my next meeting?
-                            </span>
-                        </div>
+                        
+                        {/* Moved Default AI Questions from here */}
+                        
                     </div>
                   }
 
@@ -135,6 +112,36 @@ const AskAI = ({isCollapsed}: {isCollapsed: boolean}) => {
                             <SendIcon className='size-4 text-gray-500 dark:text-gray-300'/>
                         </button>
                    </form>
+
+                   <div className='h-2'/>
+
+                   {/* Moving default questions here: */}
+                   <div className='flex items-center gap-2 flex-wrap'>
+                            <span className='px-2 py-1 bg-gray-800 text-gray-200 rounded-md text-xs cursor-pointer' onClick={() => {
+                                handleInputChange({
+                                    target: { value: 'What can I ask?'}
+                                } as unknown as React.ChangeEvent<HTMLInputElement>)
+                            }}>
+                                What can I ask?
+                            </span>
+
+                            <span className='px-2 py-1 bg-gray-800 text-gray-200 rounded-md text-xs cursor-pointer' onClick={() => {
+                                handleInputChange({
+                                    target: { value: 'When is my next flight?'}
+                                } as unknown as React.ChangeEvent<HTMLInputElement>)
+                            }}>
+                                When is my next flight?
+                            </span>
+
+                            <span className='px-2 py-1 bg-gray-800 text-gray-200 rounded-md text-xs cursor-pointer' onClick={() => {
+                                handleInputChange({
+                                    target: { value: 'When is my next meeting?'}
+                                } as unknown as React.ChangeEvent<HTMLInputElement>)
+                            }}>
+                                When is my next meeting?
+                            </span>
+                        </div>                   
+
             </div>
 
         </motion.div>

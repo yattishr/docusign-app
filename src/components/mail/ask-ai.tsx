@@ -82,7 +82,7 @@ const AskAI = ({isCollapsed}: {isCollapsed: boolean}) => {
                    <form className='w-full flex' onSubmit={handleSubmit}>
                         <input 
                             className='py-1 relative h-9 placeholder:text-[13px] flex-grow rounded-full border border-gray-200 bg-white px-3 text-[15px] outline-none'
-                            placeholder='Ask Signify-AI...'
+                            placeholder='Ask Signify Genie...'
                             value={input}
                             onChange={handleInputChange}
                         />

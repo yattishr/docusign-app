@@ -1,28 +1,84 @@
 "use server"
+import { FieldValues, RecipientDetails, Tabs, TemplateRoles } from "@/types";
 import { auth } from "@clerk/nextjs/server";
-import axios from "axios"
+import axios from "axios";
+import { headers } from "next/headers";
+import { NextRequest, NextResponse } from "next/server";
 
-const privateKey = ``
-const integrationKey = ''
-const userId = ''
-const accountBaseUrl = ''
-const apiAccountId = ''
+export const getTemplateDetails = async ({templateId, accessToken}: {templateId: string, accessToken: string}) => {
+    const { userId } = await auth();
+    const accountId = '32080310'
+    
+    // url: https://demo.docusign.net/restapi/v2.1/accounts/32080310/templates/c8b0c006-0ed8-4dab-93bb-4fc2e6555432
 
-// Exchange JWT for Access token
-export async function getAccessToken(code: string) {
-    try {
+    console.log(`Logging userId: ${userId}`);
+    if (!userId) return NextResponse.json({ message: "Unauthorised" }, { status: 401 });
 
-        // Validate if the user is authenticated. Raise an error if unauthorized.
-        const { userId } = await auth();
-        if (!userId) throw new Error("Unauthorised access");
+    const response = await fetch(`https://demo.docusign.net/restapi/v2.1/accounts/${accountId}/templates/${templateId}`, {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${accessToken}`,
+          'Content-Type': 'application/json'
+        }
+      });
 
-        // Get the Code from the URL Params
-        const params = new URLSearchParams({
-            
-        })
-
-    } catch (error) {
-        console.error('Docusign Error: ', error)
-        throw error;
+    if (!response.ok) {
+        throw new Error('Failed to fetch template details.')
     }
+
+    const data = await response.json()
+    return data
 }
+
+
+// ---
+export const sendEnvelope = async (
+    templateId: string,
+    accessToken: string,
+    recipientDetails: RecipientDetails,
+    fieldValues: FieldValues
+): Promise<void> => {
+    // Construct the envelope definition using the types
+    const envelopeDefinition = {
+        templateId: templateId,
+        templateRoles: [
+            {
+                email: recipientDetails.email,
+                name: recipientDetails.name,
+                roleName: "Signer",
+                tabs: {
+                    textTabs: [
+                        {
+                            tabLabel: "ProjectName",
+                            value: fieldValues.projectName
+                        },
+                        {
+                            tabLabel: "StartDate",
+                            value: fieldValues.startDate
+                        }
+                    ]
+                } as Tabs
+            }
+        ] as TemplateRoles[],
+        status: "sent",
+    }
+
+    // Make the API request
+    try {
+        const response = await axios.post(
+            `https://account.docusign.com/v2.1/accounts/{accountId}/envelopes`,
+            envelopeDefinition,
+            {
+                headers: {
+                    Authorization: `Bearer ${accessToken}`,
+                    "Content-Type": "application/json",
+                }
+            }
+        )
+        console.log("Envelope sent: ", response.data)
+    } catch (error) {
+        console.error("Error sending envelope: ", error)
+    }
+
+}
+

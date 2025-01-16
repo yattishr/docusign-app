@@ -46,14 +46,19 @@ export const POST = async (req: NextRequest) => {
         console.log("Expires in: ", expires_in)
 
         // Update Db with the access token and refresh token
-        await db.account.update({
-            where: {id: account?.id},
-            data: {
-                docusignAccessToken: access_token,
-                docusignRefreshToken: refresh_token,
-                updatedAt: new Date(),
-            }
-        })
+        try {
+            console.log('Saving tokens to the database...')
+            await db.account.update({
+                where: {id: account?.id},
+                data: {
+                    docusignAccessToken: access_token,
+                    docusignRefreshToken: refresh_token,
+                    updatedAt: new Date(),
+                }
+            })
+        } catch (error) {
+            console.error('An error occurred while saving the tokens to the database: ', error)
+        }
 
         // Return tokens to the client
         return NextResponse.json({ access_token, refresh_token, expires_in}, {status: 200})

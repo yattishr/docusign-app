@@ -70,3 +70,29 @@ export interface EmailMessage {
     folderId?: string;
     ommitted: Array<"threadId" | "body" | "attachments" | "recipients" | "internetHeaders">;
 }
+
+export interface TextTab {
+    tabLabel: string;
+    value: string;
+}
+
+export interface Tabs {
+    textTabs: TextTab[];
+}
+
+export interface TemplateRoles {
+    email: string;
+    name: string;
+    roleName: string
+    tabs: Tabs;
+}
+
+export interface RecipientDetails {
+    email: string;
+    name: string;
+}
+
+export interface FieldValues {
+    projectName: string;
+    startDate: string;
+}

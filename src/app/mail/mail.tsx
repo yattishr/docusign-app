@@ -13,6 +13,9 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 
+import { toast, useToast } from "@/hooks/use-toast"
+import { useLocalStorage } from 'usehooks-ts'
+
 import { Separator } from "@/components/ui/separator"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 
@@ -38,6 +41,10 @@ const Mail = ({ defaultLayout = [20, 32, 48], navCollapsedSize, defaultCollapsed
   // Code for retrieving the Docusign authorization code from the URL
   const searchParams = useSearchParams();
 
+  // Store/Retrieve the tokens to local storage.
+  const [docusignAccessToken, setDocusignAccessToken] = useLocalStorage('docusignAccessToken', '');
+  const [docusignRefreshToken, setDocusignRefreshToken] = useLocalStorage('docusignRefreshToken', '');
+
   useEffect(() => {
     const fetchTokens = async () => {
     // Get the code paramater from the URL
@@ -57,9 +64,21 @@ const Mail = ({ defaultLayout = [20, 32, 48], navCollapsedSize, defaultCollapsed
 
         const data = await response.json()
         if (response.ok) {
+          // Store tokens using useLocalStorage hook
+          setDocusignAccessToken(data.access_token);
+          setDocusignRefreshToken(data.refresh_token);
+
+          toast({
+            title: "Signify AI",
+            description: "Sucessfully connected to DocuSign!",
+          })
           console.log("Docusign Access token: ", data.access_token)
           console.log("Docusign Refresh token: ", data.refresh_token)
         } else {
+          toast({
+            title: "Signify AI",
+            description: "Sorry, we could not connect to DocuSign. Please try again later.",
+          })
           console.error("Error fetching Docusign Access tokens: ", data)
         }
 

@@ -27,19 +27,35 @@ import { useAtom } from "jotai";
 import { isSearchingAtom } from "@/components/mail/search-bar";
 import SearchDisplay from "@/components/mail/search-display";
 import { useRouter } from "next/navigation";
+import { useLocalStorage } from 'usehooks-ts';
+
+// Docusign function call
+import { getTemplateDetails } from '@/lib/docusign';
 
 const ThreadDisplay = () => {
   const { threadId, threads } = useThreads();
   const thread = threads?.find((t) => t.id === threadId);
   const [isSearching] = useAtom(isSearchingAtom);
-  const router = useRouter();
-
+  const [docusignAccessToken] = useLocalStorage('docusignAccessToken', '');
+  
   const handleDocuSignAuth = () => {
     const clientId = process.env.NEXT_PUBLIC_DS_CLIENT_ID
     const redirectUri = encodeURIComponent('http://localhost:3000/mail')
     const docusignUrl = `https://account-d.docusign.com/oauth/auth?response_type=code&scope=signature&client_id=${clientId}&redirect_uri=${redirectUri}`;
     window.location.href = docusignUrl
   }
+
+  const handleGetTemplateDetails = async () => {
+    const templateId = 'c8b0c006-0ed8-4dab-93bb-4fc2e6555432'; // Replace with the actual template ID  
+    try {
+      const templateDetails = await getTemplateDetails({ templateId, accessToken: docusignAccessToken });
+      console.log('Template Details:', JSON.stringify(templateDetails));
+
+      // Handle the template details as needed
+    } catch (error) {
+      console.error('Error fetching template details:', error);
+    }
+  };
 
   return (
     <div className="flex h-full flex-col">
@@ -79,8 +95,9 @@ const ThreadDisplay = () => {
 
         <div className="ml-auto flex items-center">
           <DropdownMenu>
-            <DropdownMenuTrigger>
+            <DropdownMenuTrigger asChild>
               <Button
+                asChild
                 className="ml-2"
                 variant={"ghost"}
                 size="icon"
@@ -91,10 +108,11 @@ const ThreadDisplay = () => {
             </DropdownMenuTrigger>
 
             <DropdownMenuContent align="end">
-              <DropdownMenuLabel>Mark as unread</DropdownMenuLabel>
-              <DropdownMenuItem>Star thread</DropdownMenuItem>
-              <DropdownMenuItem>Add label</DropdownMenuItem>
-              <DropdownMenuItem>Mute thread</DropdownMenuItem>
+              <DropdownMenuLabel className="cursor-pointer" onClick={handleGetTemplateDetails}>Get template</DropdownMenuLabel>
+              <DropdownMenuLabel className="cursor-pointer">Mark as unread</DropdownMenuLabel>
+              <DropdownMenuItem className="cursor-pointer">Star thread</DropdownMenuItem>
+              <DropdownMenuItem className="cursor-pointer">Add label</DropdownMenuItem>
+              <DropdownMenuItem className="cursor-pointer">Mute thread</DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </div>

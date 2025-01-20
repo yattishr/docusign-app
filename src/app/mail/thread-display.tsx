@@ -37,6 +37,9 @@ const ThreadDisplay = () => {
   const thread = threads?.find((t) => t.id === threadId);
   const [isSearching] = useAtom(isSearchingAtom);
   const [docusignAccessToken] = useLocalStorage('docusignAccessToken', '');
+
+  // For the purposes of testing we hard code our template Id.
+  const templateId = 'e1b8bcf9-bdcb-46a8-b308-070f601191d0'; // Replace with the actual template ID  
   
   const handleDocuSignAuth = () => {
     const clientId = process.env.NEXT_PUBLIC_DS_CLIENT_ID
@@ -46,7 +49,7 @@ const ThreadDisplay = () => {
   }
 
   const handleGetTemplateDetails = async () => {
-    const templateId = 'c8b0c006-0ed8-4dab-93bb-4fc2e6555432'; // Replace with the actual template ID  
+    
     try {
       const templateDetails = await getTemplateDetails({ templateId, accessToken: docusignAccessToken });
       console.log('Template Details:', JSON.stringify(templateDetails));
@@ -56,6 +59,37 @@ const ThreadDisplay = () => {
       console.error('Error fetching template details:', error);
     }
   };
+
+  const handleCreateEnvelope = async () => {
+    const response = await fetch('/api/create-envelope', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        accessToken: docusignAccessToken,
+        templateId: templateId,
+        recipientDetails: {
+          sendingParty: {
+            email: 'absolutesportsfan@gmail.com',
+            name: 'Sending Party Name',
+          },
+          receivingParty: {
+            email: 'yattish@gmail.com',
+            name: 'Receiving Party Name',
+          },
+        },
+        fieldValues: {
+          projectName: 'Project ABC',
+          startDate: '2023-01-01',
+        },
+        accountId: 'your-account-id',
+      }),
+    });
+  
+    const data = await response.json();
+    console.log('Envelope ID:', data.envelopeId);
+  }
 
   return (
     <div className="flex h-full flex-col">
@@ -109,6 +143,7 @@ const ThreadDisplay = () => {
 
             <DropdownMenuContent align="end">
               <DropdownMenuLabel className="cursor-pointer" onClick={handleGetTemplateDetails}>Get template</DropdownMenuLabel>
+              <DropdownMenuLabel className="cursor-pointer" onClick={handleCreateEnvelope}>Create Envelope</DropdownMenuLabel>
               <DropdownMenuLabel className="cursor-pointer">Mark as unread</DropdownMenuLabel>
               <DropdownMenuItem className="cursor-pointer">Star thread</DropdownMenuItem>
               <DropdownMenuItem className="cursor-pointer">Add label</DropdownMenuItem>

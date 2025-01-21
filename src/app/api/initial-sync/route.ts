@@ -4,6 +4,10 @@ import { db } from "@/server/db";
 import { NextRequest, NextResponse } from "next/server";
 
 export const POST = async (req: NextRequest) => {
+    if (req.method !== 'POST') {   
+        return NextResponse.json({error: 'Method not allowed'}, {status: 405})
+    }
+
     const { accountId, userId } = await req.json()
     if (!accountId || !userId) {
         return NextResponse.json({error: 'Missing accountId or userId'}, {status: 400})

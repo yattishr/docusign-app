@@ -1,23 +1,28 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { createEnvelope } from '@/lib/docusign';
+import { NextRequest, NextResponse } from 'next/server';
+import { auth } from "@clerk/nextjs/server";
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+export async function POST(req: NextRequest, res: NextResponse) {
+  // only allow POST requests
   if (req.method !== 'POST') {
-    return res.status(405).json({ message: 'Method not allowed' });
+    return NextResponse.json({message: 'Method not allowed'}, {status: 405})
   }
 
   try {
-    const { accessToken, templateId, recipientDetails, fieldValues, accountId } = req.body;
+    const { userId } = await auth();
+    console.log(`Logging userId: ${userId}`);
 
-    if (!accessToken || !templateId || !recipientDetails || !fieldValues || !accountId) {
-      return res.status(400).json({ message: 'Missing required parameters' });
-    }
+    if (!userId) return NextResponse.json({ message: "Unauthorised" }, { status: 401 });
+
+    const { accessToken, templateId, recipientDetails, fieldValues, accountId } = await req.json();
 
     const envelopeId = await createEnvelope(accessToken, templateId, recipientDetails, fieldValues, accountId);
 
-    res.status(200).json({ envelopeId });
+    return NextResponse.json({ envelopeId }, { status: 200 });
+
   } catch (error: any) {
-    console.error('Error creating envelope:', error.message);
-    res.status(500).json({ message: error.message });
+    console.error('Error creating envelope:', error);
+    return NextResponse.json({ message: 'Internal server error', error: error.message }, { status: 500 });
   }
 }

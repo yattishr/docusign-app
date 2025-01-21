@@ -20,6 +20,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { format } from "date-fns";
 import EmailDisplay from "./email-display";
 import ReplyBox from "./reply-box";
@@ -41,6 +42,7 @@ const ThreadDisplay = () => {
   // For the purposes of testing we hard code our template Id.
   const templateId = 'e1b8bcf9-bdcb-46a8-b308-070f601191d0'; // Replace with the actual template ID  
   
+  // Authorise with DocuSign and get the access token.
   const handleDocuSignAuth = () => {
     const clientId = process.env.NEXT_PUBLIC_DS_CLIENT_ID
     const redirectUri = encodeURIComponent('http://localhost:3000/mail')
@@ -48,6 +50,7 @@ const ThreadDisplay = () => {
     window.location.href = docusignUrl
   }
 
+  // Get the details of the template using the provided access token and template ID
   const handleGetTemplateDetails = async () => {    
     try {
       const templateDetails = await getTemplateDetails({ templateId, accessToken: docusignAccessToken });
@@ -59,14 +62,22 @@ const ThreadDisplay = () => {
     }
   };
 
+  // Create an envelope using the provided access token, template ID, recipient details, field values, and account ID
   const handleCreateEnvelope = async () => {
     if (!docusignAccessToken || !templateId) {
       console.error('Access token or template ID is missing');
-      alert('Missing required parameters. Please check your setup.');
+      
+      // Display an alert to the user
+      <Alert>
+        <AlertTitle>Failed to create envelope.</AlertTitle>
+        <AlertDescription>Access token or template ID is missing</AlertDescription>
+      </Alert>
+
       return;
     }
   
     setIsLoading(true);
+    
     try {
       const response = await fetch('/api/create-envelope', {
         method: 'POST',
@@ -90,7 +101,7 @@ const ThreadDisplay = () => {
             projectName: 'Project ABC',
             startDate: '2023-01-01',
           },
-          accountId: 'docusign-account-id', // Replace with dynamic value
+          accountId: '32080310', // Replace with dynamic value
         }),
       });
   
@@ -101,10 +112,18 @@ const ThreadDisplay = () => {
   
       const data = await response.json();
       console.log('Envelope ID:', data.envelopeId);
-      alert(`Envelope created successfully! ID: ${data.envelopeId}`);
+
+      <Alert>
+        <AlertTitle>Envelope created successfully!</AlertTitle>
+        <AlertDescription>Envelope ID: {data.envelopeId}</AlertDescription>
+      </Alert>
+
     } catch (error) {
       console.error('Error creating envelope:', error);
-      alert('Failed to create envelope. Please try again later.');
+      
+      <Alert>
+        <AlertTitle>Failed to create envelope</AlertTitle>        
+      </Alert>
     } finally {
       setIsLoading(false);
     }

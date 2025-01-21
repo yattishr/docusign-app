@@ -1,7 +1,7 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { createEnvelope } from '@/lib/docusign';
-import { auth } from '@clerk/nextjs/dist/types/server';
 import { NextResponse } from 'next/server';
+import { auth } from '@clerk/nextjs/server';
+import { createEnvelope } from '@/lib/docusign';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   try {

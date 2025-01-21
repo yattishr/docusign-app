@@ -3,9 +3,7 @@ import { FieldValues, RecipientDetails, Tabs, TemplateRoles } from "@/types";
 import { auth } from "@clerk/nextjs/server";
 import axios from "axios";
 import { NextRequest, NextResponse } from "next/server";
-import * as docusign from 'docusign-esign';
 import { db } from "@/server/db";
-import { NextApiRequest, NextApiResponse } from "next";
 import { ApiClient, EnvelopesApi, EnvelopeDefinition, TemplateRole } from 'docusign-esign';
 
 export const getTemplateDetails = async ({templateId, accessToken}: {templateId: string, accessToken: string}) => {

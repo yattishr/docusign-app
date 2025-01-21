@@ -2,9 +2,6 @@ import { auth } from "@clerk/nextjs/server";
 import axios from "axios";
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/server/db";
-import { NextApiRequest, NextApiResponse } from "next";
-// import * as docusign from 'docusign-esign';
-import { ApiClient, EnvelopesApi, EnvelopeDefinition, TemplateRole } from 'docusign-esign';
 
 export const POST = async (req: NextRequest) => {
     const tokenUrl = 'https://account-d.docusign.com/oauth/token'

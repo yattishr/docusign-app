@@ -4,7 +4,6 @@ import { auth } from "@clerk/nextjs/server";
 import axios from "axios";
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/server/db";
-import { ApiClient, EnvelopesApi, EnvelopeDefinition, TemplateRole } from 'docusign-esign';
 
 export const getTemplateDetails = async ({templateId, accessToken}: {templateId: string, accessToken: string}) => {
     const { userId } = await auth();
@@ -38,17 +37,14 @@ export const createEnvelope = async (
   fieldValues: any,
   accountId: string
 ) => {
-  // Initialize the DocuSign API client
-  const apiClient = new ApiClient();
-  apiClient.setBasePath('https://demo.docusign.net/restapi');
-  apiClient.addDefaultHeader('Authorization', 'Bearer ' + accessToken);
+  const apiBaseUrl = 'https://demo.docusign.net/restapi';
 
   if (!accountId) {
-    throw new Error('Failed to create envelope. No Docusign Account provided.')
+    throw new Error('Failed to create envelope. No Docusign Account provided.');
   }
 
   // Prepare the envelope details
-  const envelopeDefinition: EnvelopeDefinition = {
+  const envelopeDefinition = {
     templateId: templateId,
     templateRoles: [
       {
@@ -63,22 +59,6 @@ export const createEnvelope = async (
             },
             {
               tabLabel: 'Start-Date',
-              value: fieldValues.startDate,
-            },
-            {
-              tabLabel: 'Receiving-Name',
-              value: recipientDetails.receivingParty.name,
-            },
-            {
-              tabLabel: 'Receiving-Email',
-              value: recipientDetails.receivingParty.email,
-            },
-            {
-              tabLabel: 'Project-Name',
-              value: fieldValues.projectName,
-            },
-            {
-              tabLabel: 'Project-Start',
               value: fieldValues.startDate,
             },
           ],
@@ -106,15 +86,26 @@ export const createEnvelope = async (
   };
 
   try {
-  // Create and send the envelope
-  const envelopesApi = new EnvelopesApi(apiClient);
-  const results = await envelopesApi.createEnvelope(accountId, { envelopeDefinition });    
-  return results.envelopeId;
-  
-  } catch (error) {
-    throw new Error(`Failed to create envelope. ${error}`)
-  }
+    // Make the REST API call
+    const response = await fetch(`${apiBaseUrl}/v2.1/accounts/${accountId}/envelopes`, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(envelopeDefinition),
+    });
 
-  
+    if (!response.ok) {
+      const errorDetails = await response.json();
+      throw new Error(`Failed to create envelope. Error: ${errorDetails.message}`);
+    }
+
+    const data = await response.json();
+    return data.envelopeId;
+  } catch (error: any) {
+    throw new Error(`Failed to create envelope. ${error.message}`);
+  }
 };
+
 

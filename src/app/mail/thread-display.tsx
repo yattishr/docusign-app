@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import useThreads from "../hooks/use-threads";
 import { Button } from "@/components/ui/button";
 import {
@@ -26,7 +26,6 @@ import ReplyBox from "./reply-box";
 import { useAtom } from "jotai";
 import { isSearchingAtom } from "@/components/mail/search-bar";
 import SearchDisplay from "@/components/mail/search-display";
-import { useRouter } from "next/navigation";
 import { useLocalStorage } from 'usehooks-ts';
 
 // Docusign function call
@@ -34,10 +33,10 @@ import { getTemplateDetails } from '@/lib/docusign';
 
 const ThreadDisplay = () => {
   const { threadId, threads } = useThreads();
-  // @ts-ignore
   const thread = threads?.find((t) => t.id === threadId);
   const [isSearching] = useAtom(isSearchingAtom);
   const [docusignAccessToken] = useLocalStorage('docusignAccessToken', '');
+  const [isLoading, setIsLoading] = useState(false);
 
   // For the purposes of testing we hard code our template Id.
   const templateId = 'e1b8bcf9-bdcb-46a8-b308-070f601191d0'; // Replace with the actual template ID  
@@ -49,8 +48,7 @@ const ThreadDisplay = () => {
     window.location.href = docusignUrl
   }
 
-  const handleGetTemplateDetails = async () => {
-    
+  const handleGetTemplateDetails = async () => {    
     try {
       const templateDetails = await getTemplateDetails({ templateId, accessToken: docusignAccessToken });
       console.log('Template Details:', JSON.stringify(templateDetails));
@@ -62,35 +60,55 @@ const ThreadDisplay = () => {
   };
 
   const handleCreateEnvelope = async () => {
-    const response = await fetch('/api/create-envelope', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        accessToken: docusignAccessToken,
-        templateId: templateId,
-        recipientDetails: {
-          sendingParty: {
-            email: 'absolutesportsfan@gmail.com',
-            name: 'Sending Party Name',
-          },
-          receivingParty: {
-            email: 'yattish@gmail.com',
-            name: 'Receiving Party Name',
-          },
-        },
-        fieldValues: {
-          projectName: 'Project ABC',
-          startDate: '2023-01-01',
-        },
-        accountId: 'your-account-id',
-      }),
-    });
+    if (!docusignAccessToken || !templateId) {
+      console.error('Access token or template ID is missing');
+      alert('Missing required parameters. Please check your setup.');
+      return;
+    }
   
-    const data = await response.json();
-    console.log('Envelope ID:', data.envelopeId);
-  }
+    setIsLoading(true);
+    try {
+      const response = await fetch('/api/create-envelope', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          accessToken: docusignAccessToken,
+          templateId: templateId,
+          recipientDetails: {
+            sendingParty: {
+              email: 'absolutesportsfan@gmail.com',
+              name: 'Sending Party Name',
+            },
+            receivingParty: {
+              email: 'yattish@gmail.com',
+              name: 'Receiving Party Name',
+            },
+          },
+          fieldValues: {
+            projectName: 'Project ABC',
+            startDate: '2023-01-01',
+          },
+          accountId: 'docusign-account-id', // Replace with dynamic value
+        }),
+      });
+  
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Failed to create envelope');
+      }
+  
+      const data = await response.json();
+      console.log('Envelope ID:', data.envelopeId);
+      alert(`Envelope created successfully! ID: ${data.envelopeId}`);
+    } catch (error) {
+      console.error('Error creating envelope:', error);
+      alert('Failed to create envelope. Please try again later.');
+    } finally {
+      setIsLoading(false);
+    }
+  };  
 
   return (
     <div className="flex h-full flex-col">
@@ -171,7 +189,6 @@ const ThreadDisplay = () => {
                         {
                         thread.emails[0]?.from?.name
                           ?.split(" ")
-                          // @ts-ignore
                           .map((chunk) => chunk[0])
                           .join("")}
                       </AvatarFallback>
@@ -204,7 +221,6 @@ const ThreadDisplay = () => {
                 <div className="flex max-h-[calc(100vh-500px)] flex-col overflow-scroll">
                   <div className="flex flex-col gap-4 p-6">
                     {
-                    // @ts-ignore
                     thread.emails.map((email) => {
                       return <EmailDisplay key={email.id} email={email} />;
                     })}

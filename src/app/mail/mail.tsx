@@ -13,7 +13,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 
-import { toast, useToast } from "@/hooks/use-toast"
+import { toast } from "@/hooks/use-toast"
 import { useLocalStorage } from 'usehooks-ts'
 
 import { Separator } from "@/components/ui/separator"
@@ -29,6 +29,9 @@ import ThreadDisplay from "./thread-display";
 import SearchBar from "@/components/mail/search-bar";
 import AskAI from "@/components/mail/ask-ai";
 
+import { syncEmailsToDatabase } from "@/lib/sync-to-db";
+import { Account } from "@/lib/account";
+
 type Props = {
   defaultLayout: number[] | undefined;
   navCollapsedSize: number;
@@ -36,12 +39,57 @@ type Props = {
 };
 
 const Mail = ({ defaultLayout = [20, 32, 48], navCollapsedSize, defaultCollapsed }: Props) => {
-  const [ isCollapsed, setIsCollapsed ] = useState(defaultCollapsed)
+  const [isSyncing, setIsSyncing] = useState(false);
+  const [accountId] = useLocalStorage("accountId", "")
+  const [aurinkoAccessToken, setAurinkoAccessToken] = useLocalStorage('aurinkoAccessToken', '');
+  const [deltaToken, setDeltaToken] = useLocalStorage('deltaToken', '');
+  const router = useRouter();
 
   // Code for retrieving the Docusign authorization code from the URL
-  const searchParams = useSearchParams();
+  const searchParams = useSearchParams();  
 
-  // Store/Retrieve the tokens to local storage.
+  // 1. Use effect start
+  useEffect(() => {
+    const syncEmails = async () => {
+
+      setIsSyncing(true)
+
+      try {
+        const response = await fetch ('/api/sync-emails', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ accountId })
+        });
+
+        if (!response.ok) {
+          console.error("Failed to sync emails: ", response)
+        }
+
+        const data = await response.json()
+        setDeltaToken(data.deltaToken)
+
+        toast({
+          title: "Signify AI",
+          description: "Sucessfully synced emails!",
+        })
+
+      } catch (error) {
+        console.error("Error syncing emails ", error)
+      } finally {
+        setIsSyncing(false)
+      }
+    }
+    
+    syncEmails()
+  }, [accountId, deltaToken, toast])
+  // 1. Use effect end
+  
+  // Code for handling the collapse of the sidebar
+  const [ isCollapsed, setIsCollapsed ] = useState(defaultCollapsed)
+
+  // Store/Retrieve the Docusign tokens to local storage.
   const [docusignAccessToken, setDocusignAccessToken] = useLocalStorage('docusignAccessToken', '');
   const [docusignRefreshToken, setDocusignRefreshToken] = useLocalStorage('docusignRefreshToken', '');
 

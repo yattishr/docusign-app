@@ -19,6 +19,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { format } from "date-fns";
@@ -77,7 +78,7 @@ const ThreadDisplay = () => {
     }
   
     setIsLoading(true);
-    
+
     try {
       const response = await fetch('/api/create-envelope', {
         method: 'POST',
@@ -89,17 +90,19 @@ const ThreadDisplay = () => {
           templateId: templateId,
           recipientDetails: {
             sendingParty: {
-              email: 'absolutesportsfan@gmail.com',
-              name: 'Sending Party Name',
+              email: 'signifyaiapp@gmail.com',
+              name: 'Miss D. Meanor',
             },
             receivingParty: {
               email: 'yattish@gmail.com',
-              name: 'Receiving Party Name',
+              name: 'Johnathan Snow',
+              receivingReason: 'For the purposes of analysing and predicting trends in the market to analyze the fluctuations of the metaverse.',
             },
           },
           fieldValues: {
             projectName: 'Project ABC',
-            startDate: '2023-01-01',
+            startDate: '2023-03-01',
+            companyName: 'ABC Incoporated'
           },
           accountId: '32080310', // Replace with dynamic value
         }),

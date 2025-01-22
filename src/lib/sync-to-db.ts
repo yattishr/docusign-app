@@ -8,7 +8,7 @@ import { getEmbeddings } from "./embeddings";
 
 export async function syncEmailsToDatabase(emails: EmailMessage[], accountId: string) {
     console.log(`--- Email sync from syncEmailsToDatabase initiated. Syncing ${emails.length} emails to database. ---`)
-    const limit = pLimit(1)
+    const limit = pLimit(20)
 
     // Initialize the Orama Client
     const orama = new OramaClient(accountId)

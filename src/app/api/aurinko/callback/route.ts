@@ -27,7 +27,7 @@ export const GET = async (req: NextRequest) => {
   const accountDetails = await getAccountDetails(token.accessToken)
   console.log(`--- Successfully retrieved accountDetails ---`)
 
-  console.log(`--- Logging: ${token.accountId.toString()} from aurinko\callback\route.ts ---`)
+  console.log(`--- Logging account id: ${token.accountId} ---`)
 
   // write accountDetails into Prisma Db
   await db.account.upsert({
@@ -58,5 +58,10 @@ export const GET = async (req: NextRequest) => {
     })
   )
 
-  return NextResponse.redirect(new URL('/mail', req.url))
+  // redirect to mail page with token as a query parameter
+  const redirectUrl = new URL('/mail', req.url)
+  redirectUrl.searchParams.append('token', token.accessToken)
+  return NextResponse.redirect(redirectUrl)
+
+  // return NextResponse.redirect(new URL('/mail', req.url)) // old. remove after testing
 };

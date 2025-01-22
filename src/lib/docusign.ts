@@ -1,5 +1,4 @@
 "use server"
-import { FieldValues, RecipientDetails, Tabs, TemplateRoles } from "@/types";
 import { auth } from "@clerk/nextjs/server";
 import axios from "axios";
 import { NextRequest, NextResponse } from "next/server";
@@ -65,12 +64,20 @@ export const createEnvelope = async (
         tabs: {
           textTabs: [
             {
+              tabLabel: 'Company-Name', // Matches the label in the DocuSign template
+              value: fieldValues.companyName,
+            },
+            {
               tabLabel: 'Project-Name', // Matches the label in the DocuSign template
               value: fieldValues.projectName,
             },
             {
-              tabLabel: 'Start-Date',
+              tabLabel: 'Project-Start',
               value: fieldValues.startDate,
+            },
+            {
+              tabLabel: 'Project-Duration',
+              value: fieldValues.projectDuration,
             },
           ],
         },
@@ -88,6 +95,10 @@ export const createEnvelope = async (
             {
               tabLabel: 'Receiving-Email',
               value: recipientDetails.receivingParty.email,
+            },
+            {
+              tabLabel: 'Receiving-Reason',
+              value: recipientDetails.receivingParty.receivingReason,
             },
           ],
         },
@@ -125,5 +136,32 @@ export const createEnvelope = async (
     throw new Error(`Failed to create envelope. ${error.message}`);
   }
 };
+
+// Extract field values from an email thread using OpenAI GPT-3
+const generateFieldValues = async (emailThread: string, threadId: string) => {
+  const prompt = `Extract the following details from this email thread:
+  - Project name
+  - Start date
+  - Recipient name
+
+  Email thread: ${emailThread}`;
+
+  const response = await fetch("https://api.openai.com/v1/completions", {
+      method: "POST",
+      headers: {
+          Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
+          "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+          model: "text-davinci-003",
+          prompt: prompt,
+          max_tokens: 200,
+      }),
+  });
+
+  const data = await response.json();
+  return JSON.parse(data.choices[0].text);
+};
+
 
 

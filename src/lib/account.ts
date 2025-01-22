@@ -26,6 +26,7 @@ export class Account {
         if (deltaToken) params.deltaToken = deltaToken
         if (pageToken) params.pageToken = pageToken
 
+        console.log(`--- Getting updated emails with: ${this.token} ---`)
         const response = await axios.get<SyncUpdatedResponse>('https://api.aurinko.io/v1/email/sync/updated', {
             headers: {
                 Authorization: `Bearer ${this.token}`

@@ -5,6 +5,7 @@
     "skipLibCheck": true,
     // "target": "es2022",
     "target": "es5",
+    "downlevelIteration": true,
     "allowJs": true,
     
     "resolveJsonModule": true,

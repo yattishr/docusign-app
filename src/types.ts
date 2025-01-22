@@ -95,4 +95,8 @@ export interface RecipientDetails {
 export interface FieldValues {
     projectName: string;
     startDate: string;
+    companyName: string;
+    receivingReason: string;
+    projectDuration: string;
+    
 }

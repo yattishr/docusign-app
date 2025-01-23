@@ -15,7 +15,6 @@ const EmailDisplay = ({ email }: Props) => {
  const { account } = useThreads()
  const isMe = account?.emailAddress === email.from.address
  
-
   return (
     // Check if isMe === true and display a border around the email thread
     <div className={

@@ -110,7 +110,7 @@ const EmailEditor = ({subject, setSubject, toValues, setToValues, ccValues, setC
 
         <div className="flex items-center gap-2">
           <div className="cursor-pointer" onClick={() => setExpanded(!expanded)}>
-            <span className="font-medium text-green-600">Draft {" "} </span>
+            <span className="font-medium text-green-600">Click to expand {" "} </span>
             <span>to {to.join(', ')}</span>
           </div>
 
@@ -119,8 +119,8 @@ const EmailEditor = ({subject, setSubject, toValues, setToValues, ccValues, setC
         </div>
       </div>
 
-      <div className="prose w-full px-4 border border-green-100">
-        <EditorContent editor={editor} value={value} />
+      <div className="prose w-full px-4 border border-green-100 h-45 bg-white rounded-md shadow-md">
+        <EditorContent className='h-full p-4' editor={editor} value={value} />
       </div>
 
       <Separator />
@@ -135,7 +135,7 @@ const EmailEditor = ({subject, setSubject, toValues, setToValues, ccValues, setC
         </span>
         
         <div className='flex flex-row gap-3'>
-          <Button>            
+          <Button onClick={() => aiGenerate(editor.getText())}>
             <SparkleIcon />
             AI Complete
           </Button>

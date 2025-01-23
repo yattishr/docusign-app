@@ -33,22 +33,35 @@ import { useLocalStorage } from 'usehooks-ts';
 // Docusign function call
 import { getTemplateDetails } from '@/lib/docusign';
 
+// Our own Spinner component
+import Spinner from '@/components/spinner';
+
 const ThreadDisplay = () => {
   const { threadId, threads } = useThreads();
   const thread = threads?.find((t) => t.id === threadId);
   const [isSearching] = useAtom(isSearchingAtom);
   const [docusignAccessToken] = useLocalStorage('docusignAccessToken', '');
   const [isLoading, setIsLoading] = useState(false);
+  const [isProcessing, setIsProcessing] = useState(false);
 
   // For the purposes of testing we hard code our template Id.
   const templateId = 'e1b8bcf9-bdcb-46a8-b308-070f601191d0'; // Replace with the actual template ID  
   
   // Authorise with DocuSign and get the access token.
   const handleDocuSignAuth = () => {
-    const clientId = process.env.NEXT_PUBLIC_DS_CLIENT_ID
-    const redirectUri = encodeURIComponent('http://localhost:3000/mail')
-    const docusignUrl = `https://account-d.docusign.com/oauth/auth?response_type=code&scope=signature&client_id=${clientId}&redirect_uri=${redirectUri}`;
-    window.location.href = docusignUrl
+    setIsProcessing(true);
+
+    try {
+      const clientId = process.env.NEXT_PUBLIC_DS_CLIENT_ID
+      const redirectUri = encodeURIComponent('http://localhost:3000/mail')
+      const docusignUrl = `https://account-d.docusign.com/oauth/auth?response_type=code&scope=signature&client_id=${clientId}&redirect_uri=${redirectUri}`;
+      window.location.href = docusignUrl      
+    } catch (error) {
+      console.error('Error authorising with DocuSign:', error);
+    } finally {
+      setIsProcessing(false);
+    }
+
   }
 
   // Get the details of the template using the provided access token and template ID
@@ -163,8 +176,13 @@ const ThreadDisplay = () => {
           className="ml-2 flex items-center"
           variant={"outline"}
           onClick={handleDocuSignAuth}
+          disabled={isProcessing}
         >
-          <CloudCogIcon className="mr-2" />
+          {isLoading ? (
+            <Spinner />
+          ) : (
+            <CloudCogIcon className="mr-2" />
+          )}           
           DocuSign Connect
         </Button>
 

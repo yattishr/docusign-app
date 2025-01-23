@@ -97,6 +97,19 @@ export interface FieldValues {
     startDate: string;
     companyName: string;
     receivingReason: string;
-    projectDuration: string;
-    
+    projectDuration: string;    
+}
+
+export interface Template {
+  templateId: string;
+  name: string;
+  // Add other properties as needed
+}
+
+export interface TemplatesResponse {
+  envelopeTemplates: Template[];
+  resultSetSize: string;
+  startPosition: string;
+  endPosition: string;
+  totalSetSize: string;
 }

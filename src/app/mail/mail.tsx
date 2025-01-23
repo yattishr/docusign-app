@@ -31,6 +31,7 @@ import AskAI from "@/components/mail/ask-ai";
 
 import { syncEmailsToDatabase } from "@/lib/sync-to-db";
 import { Account } from "@/lib/account";
+import TemplatesList from "./templates-list";
 
 type Props = {
   defaultLayout: number[] | undefined;
@@ -43,7 +44,6 @@ const Mail = ({ defaultLayout = [20, 32, 48], navCollapsedSize, defaultCollapsed
   const [accountId] = useLocalStorage("accountId", "")
   const [aurinkoAccessToken, setAurinkoAccessToken] = useLocalStorage('aurinkoAccessToken', '');
   const [deltaToken, setDeltaToken] = useLocalStorage('deltaToken', '');
-  const router = useRouter();
 
   // Code for retrieving the Docusign authorization code from the URL
   const searchParams = useSearchParams();  
@@ -190,6 +190,9 @@ const Mail = ({ defaultLayout = [20, 32, 48], navCollapsedSize, defaultCollapsed
                     <TabsTrigger value="done" className="text-xinc-600 dark:text-zinc-200">
                         Done
                     </TabsTrigger>                    
+                    <TabsTrigger value="templates" className="text-xinc-600 dark:text-zinc-200">
+                        Templates
+                    </TabsTrigger>                    
                 </TabsList>
             </div>
 
@@ -204,6 +207,10 @@ const Mail = ({ defaultLayout = [20, 32, 48], navCollapsedSize, defaultCollapsed
 
             <TabsContent value="done">
               <ThreadList />
+            </TabsContent>
+
+            <TabsContent value="templates">
+              <TemplatesList />
             </TabsContent>
 
           </Tabs>

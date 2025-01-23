@@ -3,8 +3,6 @@
 import React, { ComponentProps } from 'react'
 import useThreads from '../hooks/use-threads'
 import { format, formatDate, formatDistanceToNow } from "date-fns"
-import { Thread } from '@prisma/client'
-import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 import DOMPurify from 'dompurify'
 import { Badge } from "@/components/ui/badge"

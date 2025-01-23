@@ -4,6 +4,29 @@ import axios from "axios";
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/server/db";
 
+const DOCUSIGN_API_BASE_URL = 'https://demo.docusign.net/restapi';
+
+export const listTemplates = async (accessToken: string) => {
+  const accountId = '32080310'
+
+  const { userId } = await auth();
+  if (!userId) return NextResponse.json({ message: "Unauthorised" }, { status: 401 });
+  
+  try {
+    const response = await axios.get(`${DOCUSIGN_API_BASE_URL}/v2.1/accounts/${accountId}/templates`, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        'Content-Type': 'application/json',
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching templates:', error);
+    throw error;
+  }
+};
+
+
 // Get the details of a template using the provided access token and template ID
 export const getTemplateDetails = async ({templateId, accessToken}: {templateId: string, accessToken: string}) => {
     const { userId } = await auth();
@@ -15,7 +38,7 @@ export const getTemplateDetails = async ({templateId, accessToken}: {templateId:
     
     if (!userId) return NextResponse.json({ message: "Unauthorised" }, { status: 401 });
 
-    const response = await fetch(`https://demo.docusign.net/restapi/v2.1/accounts/${accountId}/templates/${templateId}`, {
+    const response = await fetch(`${DOCUSIGN_API_BASE_URL}/v2.1/accounts/${accountId}/templates/${templateId}`, {
         method: 'GET',
         headers: {
           'Authorization': `Bearer ${accessToken}`,
@@ -45,8 +68,6 @@ export const createEnvelope = async (
 
   // Check if the user ID is available and return an error if not
   if (!userId) return NextResponse.json({ message: "Unauthorised" }, { status: 401 });
-
-  const apiBaseUrl = 'https://demo.docusign.net/restapi';
 
   // Validate the Docusign account Id required parameter
   if (!accountId) {
@@ -110,7 +131,7 @@ export const createEnvelope = async (
   try {
     // Make the REST API call
     console.log('Make the API call to create the envelope...');
-    const response = await fetch(`${apiBaseUrl}/v2.1/accounts/${accountId}/envelopes`, {
+    const response = await fetch(`${DOCUSIGN_API_BASE_URL}/v2.1/accounts/${accountId}/envelopes`, {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${accessToken}`,

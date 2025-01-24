@@ -8,6 +8,7 @@ import {
   Clock,
   CloudCogIcon,
   MoreVerticalIcon,
+  TowerControlIcon,
   Trash2Icon,
 } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
@@ -186,6 +187,25 @@ const ThreadDisplay = () => {
           DocuSign Connect
         </Button>
 
+        <div className="ml-auto flex">
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button                
+                className="ml-2"
+                variant={"outline"}
+              >
+                <TowerControlIcon className="size-4" />
+                Actions
+              </Button>
+            </DropdownMenuTrigger>
+
+            <DropdownMenuContent align="end">
+            <DropdownMenuLabel className="cursor-pointer" onClick={handleGetTemplateDetails}>Get template</DropdownMenuLabel>
+            <DropdownMenuLabel className="cursor-pointer" onClick={handleCreateEnvelope}>Create Envelope</DropdownMenuLabel>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>        
+
         <div className="ml-auto flex items-center">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -201,8 +221,6 @@ const ThreadDisplay = () => {
             </DropdownMenuTrigger>
 
             <DropdownMenuContent align="end">
-              <DropdownMenuLabel className="cursor-pointer" onClick={handleGetTemplateDetails}>Get template</DropdownMenuLabel>
-              <DropdownMenuLabel className="cursor-pointer" onClick={handleCreateEnvelope}>Create Envelope</DropdownMenuLabel>
               <DropdownMenuLabel className="cursor-pointer">Mark as unread</DropdownMenuLabel>
               <DropdownMenuItem className="cursor-pointer">Star thread</DropdownMenuItem>
               <DropdownMenuItem className="cursor-pointer">Add label</DropdownMenuItem>

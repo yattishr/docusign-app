@@ -103,6 +103,11 @@ export interface FieldValues {
 export interface Template {
   templateId: string;
   name: string;
+  description: string;
+  created: string;
+  folderName: string;
+  emailSubject: string;
+
   // Add other properties as needed
 }
 

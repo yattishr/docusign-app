@@ -16,60 +16,22 @@ const SearchDisplay = () => {
 
   useEffect(() => {
     console.log('searching for', debouncedSearchValue)
-    
-    // return if the search value is empty or the account id is not set
-    if (!accountId) return
-
-    // Logging the search value and account id
-    console.log('search.mutate called with:', { accountId, query: debouncedSearchValue });
-
-    // search the account for the search value
-    search.mutate({
-      accountId,
-      query: debouncedSearchValue
-    })
-  }, [debouncedSearchValue, accountId])
+    if (debouncedSearchValue) {
+      search.mutate({ accountId, query: debouncedSearchValue });
+    }
+  }, [debouncedSearchValue, accountId, search])
 
   return (
-    <div className='p-4 max-h-[calc(100vh-50px)] overflow-y-scroll'>
-        <div className='flex items-center gap-2 mb-4'>
-            <h2 className='text-gray-800 text-sm dark:text-gray-400'>                
-                {search.data?.hits.length ?? 0 > 0 ? (<p>Your search query for &quot;{searchValue}&quot; returned {search.data?.hits.length} results...</p>) : (<p>Your search query for &quot;{searchValue}&quot; returned 0 results...</p>)}
-            </h2>
+    <div>
+      {search.data?.hits.map((hit, index) => (
+        <div key={index}>
+          <h3>{hit.document.subject}</h3>
+          <p>{hit.document.body}</p>
+          <p>
+            To: {Array.isArray(hit.document.to) ? hit.document.to.join(', ') : hit.document.to}
+          </p>
         </div>
-
-        {/* Display Search Results... */}
-        {search.data?.hits.length === 0 ? (
-        <>
-          <p>No results found for {debouncedSearchValue}</p>
-        </>) :         
-        <>
-          <ul className='flex flex-col gap-2'>
-            {search.data?.hits.map(hit => (
-              // display the returned reults in an html list
-              <li key={hit.id} className='border list-none rounded-md p-4 hover:bg-gray-100 cursor-pointer transition-all dark:hover:bg-gray-900'>
-                <h3 className='text-base font-medium'>
-                  {hit.document.subject}
-                </h3>
-                <p className='text-sm text-gray-500'>
-                  From: {hit.document.from}
-                </p>
-
-                <p className='text-sm text-gray-500'>
-                  To: {hit.document.to.join(', ')}
-                </p>
-
-                <p className='text-sm mt-2' dangerouslySetInnerHTML={{
-                  __html: DOMPurify.sanitize(hit.document.rawBody, {USE_PROFILES: {html: true}})
-                }}>                
-                </p>
-
-              </li>
-
-            ))}
-          </ul>
-          
-        </>}
+      ))}
     </div>
   )
 }

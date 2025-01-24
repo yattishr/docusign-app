@@ -118,3 +118,9 @@ export interface TemplatesResponse {
   endPosition: string;
   totalSetSize: string;
 }
+
+export interface MessageType {
+    id: number;
+    content: string;
+    role: 'Human' | 'System' | 'Assistant'; // Assuming roles can be 'user' or 'bot'
+};

@@ -48,7 +48,13 @@ const SideBar = ({isCollapsed}: Props) => {
                 label: sentThreads?.toString() ?? '0',
                 icon: Send,
                 variant: tab === 'sent' ?  "default" : "ghost"
-            }
+            },
+            {
+              title: "Templates",
+              label: sentThreads?.toString() ?? '0',
+              icon: Send,
+              variant: tab === 'sent' ?  "default" : "ghost"
+          }
         ]}
     />
   );

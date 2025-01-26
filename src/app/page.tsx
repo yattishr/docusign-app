@@ -5,11 +5,17 @@ import { Button } from "@/components/ui/button";
 import { LinkAccountButton } from "@/components/ui/link-account-button";
 
 import {
+  BookAIcon,
+  BrainCircuitIcon,
   BrainCogIcon,
   GlobeIcon,
   MessageCircleWarning,
   MonitorSmartphoneIcon,
+  ReplyIcon,
+  RocketIcon,
+  SearchCheckIcon,
   ServerCogIcon,
+  ShieldCheckIcon,
   ZapIcon,
 } from "lucide-react";
 
@@ -21,7 +27,7 @@ const features = [
   },
   {
     name: "Smart Email Search",
-    description: "Quickly find specific emails or information using AI-enhanced search and RAG technology.",
+    description: "Quickly find specific emails or information using AI-enhanced search and Retrieval-Augmented Generation (RAG).",
     icon: MessageCircleWarning,
   },
   {
@@ -30,9 +36,24 @@ const features = [
     icon: ServerCogIcon,
   },
   {
+    name: "DocuSign Integration",
+    description: "Seamlessly create, send, and manage e-signature documents directly from your email interface.",
+    icon: BookAIcon,
+  },
+  {
+    name: "Intelligent Template Selection",
+    description: "Leverage AI agents to predict and automatically select the appropriate DocuSign templates based on email content.",
+    icon: BrainCircuitIcon,
+  },
+  {
     name: "Context-Aware Replies",
     description: "Respond faster with AI-generated replies tailored to the conversation's context.",
-    icon: GlobeIcon,
+    icon: ReplyIcon,
+  },
+  {
+    name: "Agentic RAG for Documents",
+    description: "Empower decision-making with AI-driven insights by searching and analyzing both emails and external document databases.",
+    icon: SearchCheckIcon,
   },
   {
     name: "Inbox Organization",
@@ -42,7 +63,7 @@ const features = [
   {
     name: "Privacy and Security",
     description: "Enjoy secure email processing with a focus on data protection and encryption.",
-    icon: BrainCogIcon,
+    icon: ShieldCheckIcon,
   },
   {
     name: "Cross-Platform Compatibility",
@@ -52,7 +73,7 @@ const features = [
   {
     name: "Blazing Fast Performance",
     description: "Experience lightning-fast email processing and AI assistance.",
-    icon: ZapIcon,
+    icon: RocketIcon,
   },
 ];
 

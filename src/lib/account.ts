@@ -22,18 +22,29 @@ export class Account {
     }
 
     async getUpdatedEmails( { deltaToken, pageToken } : {deltaToken?: string, pageToken?: string}) {
-        let params: Record<string, string> = {}
-        if (deltaToken) params.deltaToken = deltaToken
-        if (pageToken) params.pageToken = pageToken
-
-        console.log(`--- Getting updated emails with: ${this.token} ---`)
-        const response = await axios.get<SyncUpdatedResponse>('https://api.aurinko.io/v1/email/sync/updated', {
+        let params: Record<string, string> = {};
+        if (deltaToken) params.deltaToken = deltaToken;
+        if (pageToken) params.pageToken = pageToken;
+    
+        console.log(`--- Getting updated emails with: ${this.token} ---`);
+    
+        try {
+          const response = await axios.get<SyncUpdatedResponse>('https://api.aurinko.io/v1/email/sync/updated', {
             headers: {
-                Authorization: `Bearer ${this.token}`
+              Authorization: `Bearer ${this.token}`
             },
             params
-        })
-        return response.data
+          });
+          return response.data;
+        } catch (error) {
+          if (axios.isAxiosError(error)) {
+            console.error('--- Error during getUpdatedEmails ---', error.message);            
+            console.error('Response data:', error.response?.data);
+          } else {
+            console.error('Error during getUpdatedEmails', error);
+          }
+          throw error; // Re-throw the error after logging it
+        }
     }
 
     async performInitialSync() {

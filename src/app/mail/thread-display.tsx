@@ -23,6 +23,7 @@ import {
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
+import { toast, useToast } from "@/hooks/use-toast";
 import { format } from "date-fns";
 import EmailDisplay from "./email-display";
 import ReplyBox from "./reply-box";
@@ -79,6 +80,7 @@ const ThreadDisplay = () => {
 
   // Create an envelope using the provided access token, template ID, recipient details, field values, and account ID
   const handleCreateEnvelope = async () => {
+    
     if (!docusignAccessToken || !templateId) {
       console.error('Access token or template ID is missing');
       
@@ -92,6 +94,8 @@ const ThreadDisplay = () => {
     }
   
     setIsLoading(true);
+    // Wait 10 seconds to allow the task to complete.
+    await new Promise((resolve) => setTimeout(resolve, 10000));
 
     try {
       const response = await fetch('/api/create-envelope', {
@@ -130,17 +134,19 @@ const ThreadDisplay = () => {
       const data = await response.json();
       console.log('Envelope ID:', data.envelopeId);
 
-      <Alert>
-        <AlertTitle>Envelope created successfully!</AlertTitle>
-        <AlertDescription>Envelope ID: {data.envelopeId}</AlertDescription>
-      </Alert>
+      toast({
+        title: "Signify AI",
+        description: "Envelope successfully created!",
+      });
 
     } catch (error) {
       console.error('Error creating envelope:', error);
       
-      <Alert>
-        <AlertTitle>Failed to create envelope</AlertTitle>        
-      </Alert>
+      toast({
+        title: "Signify AI",
+        description: "Ooops! There was an error creating the envelope. Try again later.",
+      });
+
     } finally {
       setIsLoading(false);
     }
@@ -201,7 +207,18 @@ const ThreadDisplay = () => {
 
             <DropdownMenuContent align="end">
             <DropdownMenuLabel className="cursor-pointer" onClick={handleGetTemplateDetails}>Get template</DropdownMenuLabel>
-            <DropdownMenuLabel className="cursor-pointer" onClick={handleCreateEnvelope}>Create Envelope</DropdownMenuLabel>
+            {/* <DropdownMenuLabel className="cursor-pointer" onClick={handleCreateEnvelope}>Create Envelope</DropdownMenuLabel> */}
+            <DropdownMenuLabel className="cursor-pointer" onClick={handleCreateEnvelope}>
+              {isLoading ? (
+                <div className="flex items-center">
+                  <div className="animate-spin rounded-full h-4 w-4 border-t-2 border-b-2 border-gray-900 mr-2"></div>
+                  Processing...
+                </div>
+              ) : (
+                'Create Envelope'
+              )}
+            </DropdownMenuLabel>
+            <DropdownMenuSeparator />          
             </DropdownMenuContent>
           </DropdownMenu>
         </div>        

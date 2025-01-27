@@ -24,7 +24,7 @@ export async function syncEmailsToDatabase(emails: EmailMessage[], accountId: st
         // Format the document to ensure compatability with Orama
         const formattedDocument = {
             subject: email.subject ?? '', // Default to empty string if undefined
-            body: body,
+            body: body ?? '',
             rawBody: 'TEST RAW BODY SNIPPET',
             from: email.from?.name
                 ? `${email.from.name} <${email.from.address}>`

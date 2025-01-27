@@ -25,6 +25,7 @@ export const POST = async (req: Request) => {
         firstName,
         lastName,
         imageUrl,
+        updatedAt: new Date(),
       },
     });
 

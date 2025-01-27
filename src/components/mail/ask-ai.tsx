@@ -46,6 +46,8 @@ const AskAI = ({ isCollapsed }: { isCollapsed: boolean }) => {
         ...prevMessages,
         { id: Date.now(), content: combinedContent, role: "Assistant" },
       ]);
+
+      setInput('');
     } catch (error) {
       console.error("Error receiving stream:", error);
     } finally {
@@ -99,6 +101,23 @@ const AskAI = ({ isCollapsed }: { isCollapsed: boolean }) => {
                 </motion.div>
               );
             })}
+            {isLoading && (
+              <motion.div
+                key="loading"
+                layout="position"
+                className="self-start bg-gray-200 text-gray-900 dark:bg-gray-800 dark:text-gray-100 rounded-2xl px-3 py-2"
+                layoutId="loading-indicator"
+                transition={{
+                  type: 'easeOut',
+                  duration: 0.2,
+                }}
+              >
+                <div className="flex items-center">
+                  <div className="animate-spin rounded-full h-4 w-4 border-t-2 border-b-2 border-gray-900 dark:border-gray-100 mr-2"></div>
+                  <span>AI is processing...</span>
+                </div>
+              </motion.div>
+            )}
           </AnimatePresence>
         </div>
 

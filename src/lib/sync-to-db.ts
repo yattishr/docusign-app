@@ -18,25 +18,41 @@ export async function syncEmailsToDatabase(emails: EmailMessage[], accountId: st
     for (const email of emails) {
         const body = turndown.turndown(email.body ?? email.bodySnippet ?? '')
         
+        // Construct the toField and check whether the incoming value is valid.
+        const toField =
+        Array.isArray(email.to) &&
+        email.to.some(to => to && to.name && to.address) // Check if there's at least one valid recipient
+          ? email.to
+              .filter(to => to && to.name && to.address)
+              .map(to => `${to.name} <${to.address}>`)
+              .join(', ')
+          : 'signifyaiapp@gmail.com';
+      
+        console.log('Final To Field:', toField);
+        
         // Create vector embeddings of the Emails body.
         const embeddings = await getEmbeddings(body)
 
         // Format the document to ensure compatability with Orama
         const formattedDocument = {
-            subject: email.subject ?? '', // Default to empty string if undefined
-            body: body ?? '',
-            rawBody: 'TEST RAW BODY SNIPPET',
-            from: email.from?.name
-                ? `${email.from.name} <${email.from.address}>`
-                : email.from.address ?? 'Unkown Sender',
-            to: email.to?.map(to => `${to.name} <${to.address}>`).join(', ') ?? '', // Convert to string
-            sentAt: new Date(email.sentAt).toISOString(),
-            threadId: email.threadId ?? 'Unknown Thread Id',
-            embeddings: embeddings,
+          subject: email.subject ?? "", // Default to empty string if undefined
+          body: body ?? "",
+          rawBody: "TEST RAW BODY SNIPPET",
+          from: email.from?.name
+            ? `${email.from.name} <${email.from.address}>`
+            : (email.from?.address ?? "Unknown Sender"),
+          to: toField,
+          sentAt: new Date(email.sentAt).toISOString(),
+          threadId: email.threadId ?? "Unknown Thread Id",
+          embeddings: embeddings,
         };
-
-        // Log the formatted document for debugging
-        // console.log('Formatted document for Orama insertion: ', formattedDocument)
+        
+        try {
+          await orama.insert(formattedDocument);
+          console.log('Document inserted successfully into Orama index.');
+        } catch (error) {
+          console.error('Failed to insert document into Orama index:', error);
+        }
 
         // Insert the formatted document into Orama. Raise an error if the insert fails.
         try {
